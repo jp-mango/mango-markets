@@ -3,10 +3,10 @@ package main
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/jp-mango/mangomarkets/internal/api"
 	"github.com/jp-mango/mangomarkets/internal/config"
+	"github.com/jp-mango/mangomarkets/util"
 )
 
 func main() {
@@ -16,20 +16,12 @@ func main() {
 	fmt.Print("Enter ticker: ")
 	fmt.Scanln(&ticker)
 
-	tsData := api.FetchTimeSeriesDaily(apiKey, ticker)
+	tsDataDaily := api.FetchTimeSeriesDaily(apiKey, ticker)
+	util.PrintTimeSeriesData(tsDataDaily)
 
-	// Sort and print as before
-	var dates []string
-	for date := range tsData.TimeSeries {
-		dates = append(dates, date)
-	}
-	sort.Strings(dates) // Adjust sorting as needed
+	tsDataWeekly := api.FetchTimeSeriesWeekly(apiKey, ticker)
+	util.PrintTimeSeriesData(tsDataWeekly)
 
-	for _, date := range dates {
-		fmt.Printf("Date: %s\n", date)
-		for key, value := range tsData.TimeSeries[date] {
-			fmt.Printf("%s: %s\n", key, value)
-		}
-		fmt.Println("----------------")
-	}
+	tsDataMonthly := api.FetchTimeSeriesMonthly(apiKey, ticker)
+	util.PrintTimeSeriesData(tsDataMonthly)
 }
