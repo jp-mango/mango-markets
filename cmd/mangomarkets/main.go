@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	// charm.Start()
 	apiKey := config.LoadEnv()
 
 	var ticker string
@@ -22,13 +23,22 @@ func main() {
 
 	switch interval {
 	case 1:
-		tsDataDaily := api.FetchTimeSeriesDaily(apiKey, ticker)
+		tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, ticker)
+		if err != nil {
+			fmt.Print("Unable to load daily time series data for", ticker)
+		}
 		util.PrintTimeSeriesData(tsDataDaily)
 	case 2:
-		tsDataWeekly := api.FetchTimeSeriesWeekly(apiKey, ticker)
+		tsDataWeekly, err := api.FetchTimeSeriesWeekly(apiKey, ticker)
+		if err != nil {
+			fmt.Print("Unable to load daily time series data for", ticker)
+		}
 		util.PrintTimeSeriesData(tsDataWeekly)
 	case 3:
-		tsDataMonthly := api.FetchTimeSeriesMonthly(apiKey, ticker)
+		tsDataMonthly, err := api.FetchTimeSeriesMonthly(apiKey, ticker)
+		if err != nil {
+			fmt.Print("Unable to load daily time series data for", ticker)
+		}
 		util.PrintTimeSeriesData(tsDataMonthly)
 	default:
 		fmt.Println("Invalid interval")
