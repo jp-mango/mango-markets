@@ -16,12 +16,21 @@ func main() {
 	fmt.Print("Enter ticker: ")
 	fmt.Scanln(&ticker)
 
-	tsDataDaily := api.FetchTimeSeriesDaily(apiKey, ticker)
-	util.PrintTimeSeriesData(tsDataDaily)
+	var interval int
+	fmt.Println("Time interval?\n [1]:daily  [2]:weekly  [3]monthly")
+	fmt.Scanln(&interval)
 
-	tsDataWeekly := api.FetchTimeSeriesWeekly(apiKey, ticker)
-	util.PrintTimeSeriesData(tsDataWeekly)
-
-	tsDataMonthly := api.FetchTimeSeriesMonthly(apiKey, ticker)
-	util.PrintTimeSeriesData(tsDataMonthly)
+	switch interval {
+	case 1:
+		tsDataDaily := api.FetchTimeSeriesDaily(apiKey, ticker)
+		util.PrintTimeSeriesData(tsDataDaily)
+	case 2:
+		tsDataWeekly := api.FetchTimeSeriesWeekly(apiKey, ticker)
+		util.PrintTimeSeriesData(tsDataWeekly)
+	case 3:
+		tsDataMonthly := api.FetchTimeSeriesMonthly(apiKey, ticker)
+		util.PrintTimeSeriesData(tsDataMonthly)
+	default:
+		fmt.Println("Invalid interval")
+	}
 }
