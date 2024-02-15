@@ -29,7 +29,7 @@ type TimeSeriesDaily struct {
 	TimeSeries map[string]map[string]string `json:"Time Series (Daily)"`
 }
 
-func FetchTimeSeriesDaily(apiKey, ticker string) TimeSeriesDaily {
+func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -40,9 +40,9 @@ func FetchTimeSeriesDaily(apiKey, ticker string) TimeSeriesDaily {
 	var tsdData TimeSeriesDaily
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tsdData); err != nil {
-		log.Fatal("Error parsing API content:", err)
+		return TimeSeriesDaily{}, fmt.Errorf("error parsing API content:%e", err)
 	}
-	return tsdData
+	return tsdData, err
 }
 
 // ! Time series weekly
@@ -60,7 +60,7 @@ type TimeSeriesWeekly struct {
 	TimeSeries map[string]map[string]string `json:"Weekly Adjusted Time Series"`
 }
 
-func FetchTimeSeriesWeekly(apiKey, ticker string) TimeSeriesWeekly {
+func FetchTimeSeriesWeekly(apiKey, ticker string) (TimeSeriesWeekly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -71,9 +71,9 @@ func FetchTimeSeriesWeekly(apiKey, ticker string) TimeSeriesWeekly {
 	var tswData TimeSeriesWeekly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tswData); err != nil {
-		log.Fatal("Error parsing API content:", err)
+		return TimeSeriesWeekly{}, fmt.Errorf("error parsing API content:%e", err)
 	}
-	return tswData
+	return tswData, err
 }
 
 // ! Time series monthly
@@ -91,7 +91,7 @@ type TimeSeriesMonthly struct {
 	TimeSeries map[string]map[string]string `json:"Monthly Adjusted Time Series"`
 }
 
-func FetchTimeSeriesMonthly(apiKey, ticker string) TimeSeriesMonthly {
+func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -102,7 +102,7 @@ func FetchTimeSeriesMonthly(apiKey, ticker string) TimeSeriesMonthly {
 	var tsmData TimeSeriesMonthly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tsmData); err != nil {
-		log.Fatal("Error parsing API content:", err)
+		return TimeSeriesMonthly{}, fmt.Errorf("error parsing API content:%e", err)
 	}
-	return tsmData
+	return tsmData, err
 }
