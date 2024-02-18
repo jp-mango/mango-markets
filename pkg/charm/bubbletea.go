@@ -4,112 +4,93 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/jp-mango/mangomarkets/internal/api"
 )
 
-// ! Model defines application's state
+var (
+	appStyle = lipgloss.NewStyle().Padding(1, 2)
+
+	titleStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#FFFDF5")).
+			Background(lipgloss.Color("#25A065")).
+			Padding(0, 1)
+)
+
+type item struct {
+	title       string
+	description string
+}
+
+func (i item) Title() string       { return i.title }
+func (i item) Description() string { return i.description }
+func (i item) FilterValue() string { return i.title }
+
 type model struct {
-	choices  []string
-	cursor   int
-	selected map[int]struct{}
+	list list.Model
 }
 
-// ! The initial state
-func initialModel() model {
-	return model{
-		choices:  []string{"View stock prices", "View crypto prices", "View forex prices", "View financial news"},
-		selected: make(map[int]struct{}),
-	}
+func newModel(items []list.Item) model {
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
+	l.Title = "Welcome Screen"
+	l.SetShowStatusBar(false)
+	l.SetShowFilter(false)
+	l.Styles.Title = titleStyle
+
+	return model{list: l}
 }
 
-// ! Init can return a Cmd that could perform some initial I/O.
 func (m model) Init() tea.Cmd {
 	return nil
 }
 
-/*
-! The update function is called when ”things happen.” Its job is to look at what has happened and return an updated model in response.
-* It can also return a Cmd to make more things happen.
-* We usually figure out which type of Msg we received with a type switch, but you could also use a type assertion.
-*
-*/
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-
-	// Is it a key press?
 	case tea.KeyMsg:
-
-		// Cool, what was the actual key pressed?
 		switch msg.String() {
-
-		// These keys should exit the program.
-		case "ctrl+c", "q":
+		case "q", "ctrl+c":
 			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
+		case "enter":
+			i, ok := m.list.SelectedItem().(item)
+			if !ok {
+				return m, nil
 			}
-
-		// The "down" and "j" keys move the cursor down
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
+			switch i.title {
+			case "View Stock Data":
+				fmt.Println("Fetching stock data for IBM...")
+				stockData, err := api.FetchTimeSeriesDaily("YOUR_API_KEY", "IBM")
+				if err != nil {
+					fmt.Printf("Error fetching stock data: %v\n", err)
+					return m, tea.Quit
+				}
+				fmt.Printf("Latest stock data for IBM: %+v\n", stockData.MetaData)
+				return m, tea.Quit
 			}
 		}
 	}
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
-	return m, nil
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m, cmd
 }
 
 func (m model) View() string {
-	// The header
-	s := "What should we buy at the market?\n\n"
-
-	// Iterate over our choices
-	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
-
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
-	}
-
-	// The footer
-	s += "\nPress q to quit.\n"
-
-	// Send the UI for rendering
-	return s
+	return appStyle.Render(m.list.View())
 }
 
-// ! Starts the program
 func Start() {
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
+	items := []list.Item{
+		item{title: "View Stock Data", description: ""},
+		item{title: "View Crypto Data", description: ""},
+		item{title: "View Forex Data", description: ""},
+		item{title: "View Stock News", description: ""},
+	}
+
+	p := tea.NewProgram(newModel(items))
+	if err, _ := p.Run(); err != nil {
+		fmt.Printf("Error running program: %v", err)
 		os.Exit(1)
 	}
 }
