@@ -2,44 +2,57 @@ package charm
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/jp-mango/mangomarkets/internal/api"
 )
+
+const listHeight = 14
 
 var (
-	appStyle = lipgloss.NewStyle().Padding(1, 2)
-
-	titleStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFDF5")).
-			Background(lipgloss.Color("#25A065")).
-			Padding(0, 1)
+	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
+	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
+	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
+	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
+	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 )
 
-type item struct {
-	title       string
-	description string
-}
+type item string
 
-func (i item) Title() string       { return i.title }
-func (i item) Description() string { return i.description }
-func (i item) FilterValue() string { return i.title }
+func (i item) FilterValue() string { return "" }
+
+type itemDelegate struct{}
+
+func (d itemDelegate) Height() int                             { return 1 }
+func (d itemDelegate) Spacing() int                            { return 0 }
+func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+	i, ok := listItem.(item)
+	if !ok {
+		return
+	}
+
+	str := fmt.Sprintf("%d. %s", index+1, i)
+
+	fn := itemStyle.Render
+	if index == m.Index() {
+		fn = func(s ...string) string {
+			return selectedItemStyle.Render("> " + strings.Join(s, " "))
+		}
+	}
+
+	fmt.Fprint(w, fn(str))
+}
 
 type model struct {
-	list list.Model
-}
-
-func newModel(items []list.Item) model {
-	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
-	l.Title = "Welcome Screen"
-	l.SetShowStatusBar(false)
-	l.SetShowFilter(false)
-	l.Styles.Title = titleStyle
-
-	return model{list: l}
+	list     list.Model
+	choice   string
+	quitting bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -48,26 +61,22 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.list.SetWidth(msg.Width)
+		return m, nil
+
 	case tea.KeyMsg:
-		switch msg.String() {
+		switch keypress := msg.String(); keypress {
 		case "q", "ctrl+c":
+			m.quitting = true
 			return m, tea.Quit
+
 		case "enter":
 			i, ok := m.list.SelectedItem().(item)
-			if !ok {
-				return m, nil
+			if ok {
+				m.choice = string(i)
 			}
-			switch i.title {
-			case "View Stock Data":
-				fmt.Println("Fetching stock data for IBM...")
-				stockData, err := api.FetchTimeSeriesDaily("YOUR_API_KEY", "IBM")
-				if err != nil {
-					fmt.Printf("Error fetching stock data: %v\n", err)
-					return m, tea.Quit
-				}
-				fmt.Printf("Latest stock data for IBM: %+v\n", stockData.MetaData)
-				return m, tea.Quit
-			}
+			return m, tea.Quit
 		}
 	}
 
@@ -77,20 +86,37 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return appStyle.Render(m.list.View())
+	if m.choice != "" {
+		return quitTextStyle.Render(fmt.Sprintf("%s? Sounds good to me.", m.choice))
+	}
+	if m.quitting {
+		return quitTextStyle.Render("May your profits be high and your risks be low!🥭")
+	}
+	return "\n" + m.list.View()
 }
 
 func Start() {
 	items := []list.Item{
-		item{title: "View Stock Data", description: ""},
-		item{title: "View Crypto Data", description: ""},
-		item{title: "View Forex Data", description: ""},
-		item{title: "View Stock News", description: ""},
+		item("Stock Market"),
+		item("Forex & Currencies"),
+		item("Cryptocurrency"),
+		item("Economic News"),
 	}
 
-	p := tea.NewProgram(newModel(items))
-	if err, _ := p.Run(); err != nil {
-		fmt.Printf("Error running program: %v", err)
+	const defaultWidth = 20
+
+	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
+	l.Title = "Welcome to manGo Markets🥭"
+	l.SetShowStatusBar(false)
+	l.SetFilteringEnabled(false)
+	l.Styles.Title = titleStyle
+	l.Styles.PaginationStyle = paginationStyle
+	l.Styles.HelpStyle = helpStyle
+
+	m := model{list: l}
+
+	if _, err := tea.NewProgram(m).Run(); err != nil {
+		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}
 }
