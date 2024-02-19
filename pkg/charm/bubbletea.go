@@ -9,6 +9,9 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/jp-mango/mangomarkets/internal/api"
+	"github.com/jp-mango/mangomarkets/internal/config"
+	"github.com/jp-mango/mangomarkets/util"
 )
 
 const listHeight = 14
@@ -60,6 +63,7 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	apiKey := config.LoadEnv()
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetWidth(msg.Width)
@@ -76,14 +80,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if ok {
 				m.choice = string(i)
 			}
-			switch {
-			case i == "Stock Market":
+			switch i {
+			case "Stock Market":
+				//TODO: implement ticker input and fix output
+				tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, "AAPL")
+				if err != nil {
+					fmt.Print("Unable to load daily time series data for", "AAPL")
+				}
+				util.PrintTimeSeriesData(tsDataDaily)
+			case "Forex & Currencies":
 				//TODO: return
-			case i == "Forex & Currencies":
+			case "Cryptocurrency":
 				//TODO: return
-			case i == "Cryptocurrency":
-				//TODO: return
-			case i == "Economic News":
+			case "Economic News":
 				//TODO: return
 			}
 		}
