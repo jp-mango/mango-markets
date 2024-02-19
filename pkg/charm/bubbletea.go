@@ -71,12 +71,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 
-		case "enter":
+		case "enter", " ":
 			i, ok := m.list.SelectedItem().(item)
 			if ok {
 				m.choice = string(i)
 			}
-			return m, tea.Quit
+			switch {
+			case i == "Stock Market":
+				//TODO: return
+			case i == "Forex & Currencies":
+				//TODO: return
+			case i == "Cryptocurrency":
+				//TODO: return
+			case i == "Economic News":
+				//TODO: return
+			}
 		}
 	}
 
@@ -87,7 +96,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	if m.choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("%s? Sounds good to me.", m.choice))
+		return quitTextStyle.Render(fmt.Sprint(m.choice, ":\n"))
 	}
 	if m.quitting {
 		return quitTextStyle.Render("May your profits be high and your risks be low!🥭")
