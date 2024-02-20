@@ -52,6 +52,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	fmt.Fprint(w, fn(str))
 }
 
+// app state
 type model struct {
 	list     list.Model
 	choice   string
@@ -83,9 +84,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch i {
 			case "Stock Market":
 				//TODO: implement ticker input and fix output
-				tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, "AAPL")
+				var ticker string
+				fmt.Println("Enter Ticker: ")
+				fmt.Scan(&ticker)
+				tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, ticker)
 				if err != nil {
-					fmt.Print("Unable to load daily time series data for", "AAPL")
+					fmt.Print("Unable to load daily time series data for", ticker)
 				}
 				util.PrintTimeSeriesData(tsDataDaily)
 			case "Forex & Currencies":
