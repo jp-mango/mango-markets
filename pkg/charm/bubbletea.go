@@ -51,12 +51,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				case "Stock Market Data":
 					m.state = StockMarketData
 					fmt.Println("Navigating to Stock Market Data...")
-					// Replace with actual logic or navigation
+					//TODO:  Replace with actual logic or navigation
 					return m, nil
 				case "Stock Market News":
 					m.state = StockMarketNews
 					fmt.Println("Navigating to Stock Market News...")
-					// Replace with actual logic or navigation
+					//TODO:  Replace with actual logic or navigation
 					return m, nil
 				}
 			}
