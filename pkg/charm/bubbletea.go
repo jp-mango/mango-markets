@@ -72,7 +72,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return docStyle.Render(m.list.View())
+	switch m.state {
+	case MainMenu:
+		return docStyle.Render(m.list.View())
+	case StockMarketData:
+		return "Viewing Stock Market Data..."
+	case StockMarketNews:
+		return "Viewing Stock Market News..."
+	}
+	// Default view
+	return ""
 }
 
 func Start() {
