@@ -3,34 +3,76 @@ package charm
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/spinner"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
-var docStyle = lipgloss.NewStyle().Margin(1, 2)
-
-type item struct {
-	title, desc string
-}
-
-func (i item) Title() string       { return i.title }
-func (i item) Description() string { return i.desc }
-func (i item) FilterValue() string { return i.title }
-
-// AppState represents different states in the application.
-type AppState int
+// Define application states
+type state int
 
 const (
-	MainMenu AppState = iota
-	StockMarketData
-	StockMarketNews
+	mainMenuState state = iota
+	tickerInputState
+	timeIntervalState
+	fetchingDataState
+	displayDataState
 )
 
+// Define menu items
+type menuItem string
+
+func (i menuItem) Title() string       { return string(i) }
+func (i menuItem) Description() string { return "" }
+func (i menuItem) FilterValue() string { return string(i) }
+
+// Model represents the application state
 type model struct {
-	list  list.Model
-	state AppState
+	currentState  state
+	list          list.Model
+	tickerInput   textinput.Model
+	spinner       spinner.Model
+	fetchedData   string
+	selectedStock string
+	selectedTime  string
+	apiKey        string
+}
+
+type dataMsg struct {
+	data []string
+}
+
+func initialModel() model {
+	// Initialize the main menu
+	items := []list.Item{
+		menuItem("Stock Market"),
+		menuItem("Financial News"),
+		menuItem("Forex Market"),
+		menuItem("Cryptocurrency Market"),
+		menuItem("Exit"),
+	}
+	l := list.New(items, list.NewDefaultDelegate(), 0, 0)
+	l.Title = "Mango Markets 🥭"
+
+	// Initialize the ticker input
+	ti := textinput.New()
+	ti.Placeholder = "Enter Ticker Symbol"
+	ti.Focus()
+
+	// Initialize the spinner
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+
+	return model{
+		currentState: mainMenuState,
+		list:         l,
+		tickerInput:  ti,
+		spinner:      s,
+		apiKey:       "your_api_key_here", // Use your actual API key
+	}
 }
 
 func (m model) Init() tea.Cmd {
@@ -38,32 +80,43 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch m.currentState {
+	case mainMenuState:
+		return m.updateMainMenu(msg)
+	case tickerInputState:
+		return m.updateTickerInput(msg)
+	case timeIntervalState:
+		return m.updateTimeInterval(msg)
+	case fetchingDataState:
+		return m.updateFetchingData(msg)
+	case displayDataState:
+		return m.updateDisplayData(msg)
+	}
+	return m, nil
+}
+
+// Update function for the main menu state
+func (m model) updateMainMenu(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "q":
+		case "q", "ctrl+c", "esc":
 			return m, tea.Quit
-
-		// Check if "enter" is pressed.
-		case "enter", " ":
-			if selectedItem, ok := m.list.SelectedItem().(item); ok {
-				switch selectedItem.title {
-				case "Stock Market Data":
-					m.state = StockMarketData
-					fmt.Println("Navigating to Stock Market Data...")
-					//TODO:  Replace with actual logic or navigation
-					return m, nil
-				case "Stock Market News":
-					m.state = StockMarketNews
-					fmt.Println("Navigating to Stock Market News...")
-					//TODO:  Replace with actual logic or navigation
-					return m, nil
-				}
+		case "enter":
+			i, ok := m.list.SelectedItem().(menuItem)
+			if !ok {
+				return m, nil
+			}
+			switch i {
+			case "Stock Market":
+				m.currentState = tickerInputState
+				m.tickerInput.Focus()
+				return m, nil
+			case "Exit":
+				return m, tea.Quit
+				// Handle other menu items similarly...
 			}
 		}
-	case tea.WindowSizeMsg:
-		h, v := docStyle.GetFrameSize()
-		m.list.SetSize(msg.Width-h, msg.Height-v)
 	}
 
 	var cmd tea.Cmd
@@ -71,32 +124,94 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
-	switch m.state {
-	case MainMenu:
-		return docStyle.Render(m.list.View())
-	case StockMarketData:
-		return "Viewing Stock Market Data..."
-	case StockMarketNews:
-		return "Viewing Stock Market News..."
+// Update function for the ticker input state
+func (m model) updateTickerInput(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	m.tickerInput, cmd = m.tickerInput.Update(msg)
+
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		if msg.Type == tea.KeyEnter {
+			m.selectedStock = m.tickerInput.Value()
+			m.currentState = timeIntervalState
+			// Reset ticker input for potential later use
+			m.tickerInput.Reset()
+			m.tickerInput.Blur()
+			return m, nil
+		}
 	}
-	// Default view
-	return ""
+	return m, cmd
+}
+
+// Update function for the time interval selection state
+func (m model) updateTimeInterval(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// This is a placeholder for handling time interval selection.
+	// For simplicity, we're directly moving to the fetching data state.
+	// You might want to implement a similar text input or list selection for the interval.
+	m.currentState = fetchingDataState
+	return m, m.fetchData()
+}
+
+// Example fetchData function that initiates data fetching and returns a command
+func (m model) fetchData() tea.Cmd {
+	return func() tea.Msg {
+		// Simulate a fetch with a delay
+		time.Sleep(2 * time.Second)
+		// Simulate fetched data
+		fetchedData := "Fetched data for " + m.selectedStock
+		return dataMsg{data: []string{fetchedData}}
+	}
+}
+
+// Update function for the fetching data state
+func (m model) updateFetchingData(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case dataMsg:
+		m.fetchedData = fmt.Sprintf("%v", msg.data)
+		m.currentState = displayDataState
+		return m, nil
+	}
+
+	var cmd tea.Cmd
+	m.spinner, cmd = m.spinner.Update(msg)
+	return m, cmd
+}
+
+// Update function for the display data state
+func (m model) updateDisplayData(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		if msg.String() == "q" || msg.String() == "esc" {
+			m.currentState = mainMenuState
+			m.fetchedData = ""
+			return m, nil
+		}
+	}
+	return m, nil
+}
+
+func (m model) View() string {
+	switch m.currentState {
+	case mainMenuState:
+		return m.list.View()
+	case tickerInputState, timeIntervalState:
+		return m.tickerInput.View()
+	case fetchingDataState:
+		return m.spinner.View() + "\nFetching data..."
+	case displayDataState:
+		return m.fetchedData
+	}
+	return "Loading..."
 }
 
 func Start() {
-	items := []list.Item{
-		item{title: "Stock Market Data", desc: "view stock prices and dividends."},
-		item{title: "Stock Market News", desc: "view financial news."},
-	}
-
-	m := model{list: list.New(items, list.NewDefaultDelegate(), 0, 0)}
-	m.list.Title = "Welcome to Mango Markets"
-
-	p := tea.NewProgram(m, tea.WithAltScreen())
-
+	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
-		fmt.Println("Error running program:", err)
+		fmt.Printf("Error running program: %v", err)
 		os.Exit(1)
 	}
 }
+
+// Implement other methods as needed, such as fetching data from the API,
+// handling user input for ticker symbols and time intervals, and formatting
+// the display of fetched data.
