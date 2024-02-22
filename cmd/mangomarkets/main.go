@@ -43,8 +43,15 @@ mainLoop:
 
 				switch choiceStock {
 				case "1":
-					// Implementation for top gainers and losers
-					fmt.Println("Top Gainers and Losers functionality to be implemented.")
+					// TODO: Implementation for top gainers and losers
+					fmt.Println("Retrieving top gainers and losers...")
+					gainLoss, err := api.FetchGainLoss(apiKey)
+					if err != nil {
+						fmt.Println("Unable to load the top winners and losers")
+					} else {
+						util.PrintTopGainersAndLosers(*gainLoss)
+					}
+
 				case "2":
 				tickerSearch:
 					for {

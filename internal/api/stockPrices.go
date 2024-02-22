@@ -106,3 +106,42 @@ func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
 	}
 	return tsmData, err
 }
+
+// ! Top Gainers and Losers
+type TopGainLoss struct {
+	Metadata           string   `json:"metadata"`
+	LastUpdated        string   `json:"last_updated"`
+	TopGainers         []Ticker `json:"top_gainers"`
+	TopLosers          []Ticker `json:"top_losers"`
+	MostActivelyTraded []Ticker `json:"most_actively_traded"`
+}
+
+type Ticker struct {
+	Ticker           string `json:"ticker"`
+	Price            string `json:"price"`
+	ChangeAmount     string `json:"change_amount"`
+	ChangePercentage string `json:"change_percentage"`
+	Volume           string `json:"volume"`
+}
+
+func FetchGainLoss(apiKey string) (*TopGainLoss, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=%v", apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching data: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %v", err)
+	}
+
+	var marketData TopGainLoss
+	err = json.Unmarshal(body, &marketData)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing JSON: %v", err)
+	}
+
+	return &marketData, nil
+}

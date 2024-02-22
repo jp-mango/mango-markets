@@ -35,3 +35,16 @@ func PrintTimeSeriesData(provider api.TimeSeriesProvider) {
 		fmt.Println("----------------")
 	}
 }
+
+func PrintTopGainersAndLosers(marketData api.TopGainLoss) {
+	fmt.Println("Top Gainers:")
+
+	for _, gainer := range marketData.TopGainers {
+		fmt.Printf("Ticker: %s, Price: %s, Change: %s%%, Volume: %s\n", gainer.Ticker, gainer.Price, gainer.ChangePercentage, gainer.Volume)
+	}
+	fmt.Println("\nTop Losers:")
+
+	for _, loser := range marketData.TopLosers {
+		fmt.Printf("Ticker: %s, Price: %s, Change: %s%%, Volume: %s\n", loser.Ticker, loser.Price, loser.ChangePercentage, loser.Volume)
+	}
+}
