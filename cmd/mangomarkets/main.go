@@ -140,8 +140,13 @@ mainLoop:
 					}
 				case "3":
 					// TODO: Global Market Status
-					fmt.Println("Global market status functionality to be implemented.")
-
+					fmt.Println("Global market status:")
+					marketHours, err := api.FetchMarketStatus(apiKey)
+					if err != nil {
+						fmt.Println("Unable to fetch market hours", err)
+					} else {
+						util.PrintMarketStatus(*marketHours)
+					}
 				case "4": // return to main loop
 					continue mainLoop
 				}

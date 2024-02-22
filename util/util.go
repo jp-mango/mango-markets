@@ -48,3 +48,11 @@ func PrintTopGainersAndLosers(marketData api.TopGainLoss) {
 		fmt.Printf("Ticker: %s, Price: %s, Change: %s%%, Volume: %s\n", loser.Ticker, loser.Price, loser.ChangePercentage, loser.Volume)
 	}
 }
+
+func PrintMarketStatus(marketStatus api.MarketHours) {
+	fmt.Println(marketStatus.Endpoint)
+	for _, market := range marketStatus.Markets {
+		fmt.Printf("\nMarket Type: %s\nRegion: %s\nPrimary Exchanges: %s\nOpen: %s\nClose: %s\nStatus: %s\nNotes: %s\n",
+			market.MarketType, market.Region, market.PrimaryExchanges, market.LocalOpen, market.LocalClose, market.CurrentStatus, market.Notes)
+	}
+}

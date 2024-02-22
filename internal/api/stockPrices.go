@@ -145,3 +145,40 @@ func FetchGainLoss(apiKey string) (*TopGainLoss, error) {
 
 	return &marketData, nil
 }
+
+// ! Global Market Hours
+type MarketHours struct {
+	Endpoint string   `json:"endpoint"`
+	Markets  []Market `json:"markets"`
+}
+
+type Market struct {
+	MarketType       string `json:"market_type"`
+	Region           string `json:"region"`
+	PrimaryExchanges string `json:"primary_exchanges"`
+	LocalOpen        string `json:"local_open"`
+	LocalClose       string `json:"local_close"`
+	CurrentStatus    string `json:"current_status"`
+	Notes            string `json:"notes"`
+}
+
+func FetchMarketStatus(apiKey string) (*MarketHours, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=%v", apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var marketStatus MarketHours
+	if err := json.Unmarshal(body, &marketStatus); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+
+	return &marketStatus, nil
+}
