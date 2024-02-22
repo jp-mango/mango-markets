@@ -1,4 +1,3 @@
-// main.go
 package main
 
 import (
@@ -13,59 +12,148 @@ import (
 )
 
 func main() {
-	//	charm.Start()
-	//}
 	reader := bufio.NewReader(os.Stdin)
+	apiKey := config.LoadEnv()
+
+mainLoop:
 	for {
-		fmt.Print("\nWelcome to Mango Markets!🥭\n\n")
+		fmt.Println("\nWelcome to Mango Markets!🥭")
 		fmt.Println("1. Stock Market")
 		fmt.Println("2. Financial News")
 		fmt.Println("3. Forex Market")
 		fmt.Println("4. Cryptocurrency Market")
 		fmt.Println("5. Exit")
 		fmt.Print("Enter choice: ")
-		choice, _ := reader.ReadString('\n')
-		choice = strings.TrimSpace(choice)
 
-		switch choice {
+		choiceMain, _ := reader.ReadString('\n')
+		choiceMain = strings.TrimSpace(choiceMain)
+
+		switch choiceMain {
 		case "1":
-			apiKey := config.LoadEnv()
-			var ticker string
-			fmt.Print("\nEnter ticker: ")
-			fmt.Scanln(&ticker)
+		stockMarket:
+			for {
+				fmt.Println("\nStock Market Data:🏦")
+				fmt.Println("1. Top Gainers and Losers")
+				fmt.Println("2. Ticker Search")
+				fmt.Println("3. Global Market Status")
+				fmt.Println("4. Return to Main Menu")
+				fmt.Print("Enter a choice: ")
+				choiceStock, _ := reader.ReadString('\n')
+				choiceStock = strings.TrimSpace(choiceStock)
 
-			var interval int
-			fmt.Println("Time interval?\n [1]:daily  [2]:weekly  [3]monthly")
-			fmt.Scanln(&interval)
+				switch choiceStock {
+				case "1":
+					// Implementation for top gainers and losers
+					fmt.Println("Top Gainers and Losers functionality to be implemented.")
+				case "2":
+				tickerSearch:
+					for {
+						var ticker string
+						fmt.Print("\nEnter ticker: ")
+						ticker, _ = reader.ReadString('\n')
+						ticker = strings.TrimSpace(ticker)
 
-			switch interval {
-			case 1:
-				fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
-				tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, ticker)
-				if err != nil {
-					fmt.Print("Unable to load daily time series data for", ticker)
+						fmt.Printf("\nWhat data would you like to see for %s?:\n", strings.ToUpper(ticker))
+						fmt.Println("1. Stock Price")
+						fmt.Println("2. Company Overview")
+						fmt.Println("3. Income Statement")
+						fmt.Println("4. Balance Sheet")
+						fmt.Println("5. Cash Flow")
+						fmt.Println("6. Earnings")
+						fmt.Println("7. Return To Stock Market Data")
+						fmt.Print("Enter a choice: ")
+						tickerChoice, _ := reader.ReadString('\n')
+						tickerChoice = strings.TrimSpace(tickerChoice)
+
+						switch tickerChoice {
+						case "1": // stock price
+							fmt.Println("Time interval - [1]:daily [2]:weekly [3]:monthly")
+							var interval string
+							interval, _ = reader.ReadString('\n')
+							interval = strings.TrimSpace(interval)
+
+							switch interval {
+							case "1": // daily prices
+								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
+								tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, ticker)
+								if err != nil {
+									fmt.Println("Unable to load daily time series data for", ticker)
+								} else {
+									util.PrintTimeSeriesData(tsDataDaily)
+								}
+							case "2": // weekly prices
+								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
+								tsDataWeekly, err := api.FetchTimeSeriesWeekly(apiKey, ticker)
+								if err != nil {
+									fmt.Println("Unable to load weekly time series data for", ticker)
+								} else {
+									util.PrintTimeSeriesData(tsDataWeekly)
+								}
+							case "3": // monthly prices
+								fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
+								tsDataMonthly, err := api.FetchTimeSeriesMonthly(apiKey, ticker)
+								if err != nil {
+									fmt.Println("Unable to load monthly time series data for", ticker)
+								} else {
+									util.PrintTimeSeriesData(tsDataMonthly)
+								}
+							default:
+								fmt.Println("Invalid interval")
+							}
+
+						case "2":
+							// TODO: Company Overview
+							fmt.Println("Company overview functionality to be implemented.")
+
+						case "3":
+							// TODO: Income Statement
+							fmt.Println("Income statement functionality to be implemented.")
+
+						case "4":
+							// TODO: Balance Sheet
+							fmt.Println("Balance sheet functionality to be implemented.")
+
+						case "5":
+							// TODO: Cash Flow
+							fmt.Println("Cash flow functionality to be implemented.")
+
+						case "6":
+							// TODO: Earnings
+							fmt.Println("Earnings functionality to be implemented.")
+
+						case "7": // return to stock market data
+							continue stockMarket
+						}
+
+						if tickerChoice != "7" {
+							fmt.Println("Press any key to return to Ticker Search")
+							_, _ = reader.ReadString('\n')
+							continue tickerSearch
+						}
+					}
+				case "3":
+					// TODO: Global Market Status
+					fmt.Println("Global market status functionality to be implemented.")
+
+				case "4": // return to main loop
+					continue mainLoop
 				}
-				util.PrintTimeSeriesData(tsDataDaily)
-			case 2:
-				fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
-				tsDataWeekly, err := api.FetchTimeSeriesWeekly(apiKey, ticker)
-				if err != nil {
-					fmt.Print("Unable to load daily time series data for", ticker)
-				}
-				util.PrintTimeSeriesData(tsDataWeekly)
-			case 3:
-				fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
-				tsDataMonthly, err := api.FetchTimeSeriesMonthly(apiKey, ticker)
-				if err != nil {
-					fmt.Print("Unable to load daily time series data for", ticker)
-				}
-				util.PrintTimeSeriesData(tsDataMonthly)
-			default:
-				fmt.Println("Invalid interval")
 			}
+		case "2":
+			// TODO: Financial News
+			fmt.Println("Financial news functionality to be implemented.")
+
+		case "3":
+			// TODO: Forex Market
+			fmt.Println("Forex market functionality to be implemented.")
+
+		case "4":
+			// TODO: Crypto Market
+			fmt.Println("crypto market functionality to be implemented.")
+
 		case "5":
-			fmt.Println("\nmay your profits be HIGH and your risk LOW!")
-			return
+			fmt.Println("\nMay your profits be HIGH and your risks LOW! 🥭")
+			break mainLoop
 		}
 	}
 }
