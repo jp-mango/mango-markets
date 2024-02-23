@@ -103,3 +103,87 @@ func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
 	fmt.Printf("Dividend Date: %s\n", companyInfo.DividendDate)
 	fmt.Printf("ExDividend Date: %s\n", companyInfo.ExDividendDate)
 }
+
+func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
+	for _, incomeStatement := range incomeStatement.AnnualReport {
+		fmt.Printf(`
+		Fiscal Year End: %s
+		Report Currency: %s
+		Gross Profit: %s
+		Total Revenue: %s
+		Cost of Revenue: %s
+		Cost of Goods and Services Sold: %s
+		Operating Income: %s
+		Selling General and Administrative: %s
+		Research and Development: %s
+		Operating Expenses: %s
+		Investment Income: %s
+		Net Interest Income: %s
+		Interest Income: %s
+		Interest Expense: %s
+		Non-Interest Income: %s
+		Other Non-Operative Income: %s
+		Deprecation: %s
+		Deprecation and Amortization: %s
+		Income Before Tax: %s
+		Income Tax Expenses: %s
+		Interest and Debt Expenses: %s
+		Net Income From Continuing Operation: %s
+		Comprehensive Income: %s
+		EBIT: %s
+		EBITDA: %s
+		Net Income: %s
+		`, incomeStatement.FiscalEndDate, incomeStatement.Currency, incomeStatement.GrossProfit,
+			incomeStatement.TotalRevenue, incomeStatement.CostOfRevenue, incomeStatement.CostOfGSSold,
+			incomeStatement.OperatingIncome, incomeStatement.SellingGenAdmin, incomeStatement.RnD,
+			incomeStatement.OperatingExpenses, incomeStatement.InvestmentIncome, incomeStatement.NetInterestIncome,
+			incomeStatement.InterestIncome, incomeStatement.InterestExpense, incomeStatement.NonInterestIncome,
+			incomeStatement.NonOperatingIncome, incomeStatement.Deprecation, incomeStatement.DepreciationAndAmortization,
+			incomeStatement.IncomeBeforeTax, incomeStatement.IncomeTaxExpense, incomeStatement.InterestAndDebt,
+			incomeStatement.NetIncomeFromContinuingOperations, incomeStatement.ComprehensiveIncomeNetOfTax,
+			incomeStatement.EBIT, incomeStatement.EBITDA, incomeStatement.NetIncome)
+
+	}
+}
+
+func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
+	for _, incomeStatement := range incomeStatement.QuarterlyReport {
+		fmt.Printf(`
+		Fiscal Year End: %s
+		Report Currency: %s
+		Gross Profit: %s
+		Total Revenue: %s
+		Cost of Revenue: %s
+		Cost of Goods and Services Sold: %s
+		Operating Income: %s
+		Selling General and Administrative: %s
+		Research and Development: %s
+		Operating Expenses: %s
+		Investment Income: %s
+		Net Interest Income: %s
+		Interest Income: %s
+		Interest Expense: %s
+		Non-Interest Income: %s
+		Other Non-Operative Income: %s
+		Deprecation: %s
+		Deprecation and Amortization: %s
+		Income Before Tax: %s
+		Income Tax Expenses: %s
+		Interest and Debt Expenses: %s
+		Net Income From Continuing Operation: %s
+		Comprehensive Income: %s
+		EBIT: %s
+		EBITDA: %s
+		Net Income: %s
+		`, incomeStatement.FiscalEndDate, incomeStatement.Currency, incomeStatement.GrossProfit,
+			incomeStatement.TotalRevenue, incomeStatement.CostOfRevenue, incomeStatement.CostOfGSSold,
+			incomeStatement.OperatingIncome, incomeStatement.SellingGenAdmin, incomeStatement.RnD,
+			incomeStatement.OperatingExpenses, incomeStatement.InvestmentIncome, incomeStatement.NetInterestIncome,
+			incomeStatement.InterestIncome, incomeStatement.InterestExpense, incomeStatement.NonInterestIncome,
+			incomeStatement.NonOperatingIncome, incomeStatement.Deprecation, incomeStatement.DepreciationAndAmortization,
+			incomeStatement.IncomeBeforeTax, incomeStatement.IncomeTaxExpense, incomeStatement.InterestAndDebt,
+			incomeStatement.NetIncomeFromContinuingOperations, incomeStatement.ComprehensiveIncomeNetOfTax,
+			incomeStatement.EBIT, incomeStatement.EBITDA, incomeStatement.NetIncome)
+
+	}
+}

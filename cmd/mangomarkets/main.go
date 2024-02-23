@@ -60,7 +60,7 @@ mainLoop:
 						ticker, _ = reader.ReadString('\n')
 						ticker = strings.TrimSpace(ticker)
 
-						fmt.Printf("\nWhat data would you like to see for %s?:\n", strings.ToUpper(ticker))
+						fmt.Printf("\nWhat data would you like to see for %s?\n", strings.ToUpper(ticker))
 						fmt.Println("1. Stock Price")
 						fmt.Println("2. Company Overview")
 						fmt.Println("3. Income Statement")
@@ -117,7 +117,27 @@ mainLoop:
 							}
 						case "3":
 							// TODO: Income Statement
-							fmt.Println("Income statement functionality to be implemented.")
+							fmt.Printf("[A]nnual or [Q]uarterly Income Statement for %s?\n", strings.ToUpper(ticker))
+							incomeTimeFrame, _ := reader.ReadString('\n')
+							incomeTimeFrame = strings.ToUpper(strings.TrimSpace(incomeTimeFrame))
+							switch incomeTimeFrame {
+							case "A":
+								incomeStatement, err := api.FetchIncomeStatement(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+								} else {
+									util.PrintAnnualIncomeStatement(incomeStatement)
+									fmt.Println()
+								}
+							case "Q":
+								incomeStatement, err := api.FetchIncomeStatement(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+								} else {
+									util.PrintQuarterlyIncomeStatement(incomeStatement)
+									fmt.Println()
+								}
+							}
 
 						case "4":
 							// TODO: Balance Sheet
