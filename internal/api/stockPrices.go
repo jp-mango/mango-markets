@@ -258,3 +258,60 @@ func FetchCompanyOverview(ticker, apiKey string) (*CompanyOverview, error) {
 	}
 	return &companyInfo, nil
 }
+
+//! Income statement
+
+type IncomeStatement struct {
+	Symbol          string         `json:"symbol"`
+	AnnualReport    []IncomeReport `json:"annualReports"`
+	QuarterlyReport []IncomeReport `json:"quarterlyReports"`
+}
+
+type IncomeReport struct {
+	FiscalEndDate                     string `json:"fiscalDateEnding"`
+	Currency                          string `json:"reportedCurrency"`
+	GrossProfit                       string `json:"grossProfit"`
+	TotalRevenue                      string `json:"totalRevenue"`
+	CostOfRevenue                     string `json:"costOfRevenue"`
+	CostOfGSSold                      string `json:"costofGoodsAndServicesSold"`
+	OperatingIncome                   string `json:"operatingIncome"`
+	SellingGenAdmin                   string `json:"sellingGeneralAndAdministrative"`
+	RnD                               string `json:"researchAndDevelopment"`
+	OperatingExpenses                 string `json:"operatingExpenses"`
+	InvestmentIncome                  string `json:"investmentIncomeNet"`
+	NetInterestIncome                 string `json:"netInterestIncome"`
+	InterestIncome                    string `json:"interestIncome"`
+	InterestExpense                   string `json:"interestExpense"`
+	NonInterestIncome                 string `json:"nonInterestIncome"`
+	NonOperatingIncome                string `json:"otherNonOperatingIncome"`
+	Deprecation                       string `json:"depreciation"`
+	DepreciationAndAmortization       string `json:"depreciationAndAmortization"`
+	IncomeBeforeTax                   string `json:"incomeBeforeTax"`
+	IncomeTaxExpense                  string `json:"incomeTaxExpense"`
+	InterestAndDebt                   string `json:"interestAndDebtExpense"`
+	NetIncomeFromContinuingOperations string `json:"netIncomeFromContinuingOperations"`
+	ComprehensiveIncomeNetOfTax       string `json:"comprehensiveIncomeNetOfTax"`
+	EBIT                              string `json:"ebit"`
+	EBITDA                            string `json:"ebitda"`
+	NetIncome                         string `json:"netIncome"`
+}
+
+func FetchIncomeStatement(ticker, apiKey string) (*IncomeStatement, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var incomeStatement IncomeStatement
+	if err := json.Unmarshal(body, &incomeStatement); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return &incomeStatement, nil
+}
