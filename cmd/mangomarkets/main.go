@@ -49,7 +49,7 @@ mainLoop:
 					if err != nil {
 						fmt.Println("Unable to load the top winners and losers")
 					} else {
-						util.PrintTopGainersAndLosers(*gainLoss)
+						util.PrintTopGainersAndLosers(gainLoss)
 					}
 
 				case "2":
@@ -110,8 +110,12 @@ mainLoop:
 
 						case "2":
 							// TODO: Company Overview
-							fmt.Println("Company overview functionality to be implemented.")
-
+							companyInfo, err := api.FetchCompanyOverview(ticker, apiKey)
+							if err != nil {
+								fmt.Println("Unable to fetch company info for", ticker)
+							} else {
+								util.PrintCompanyInfo(companyInfo)
+							}
 						case "3":
 							// TODO: Income Statement
 							fmt.Println("Income statement functionality to be implemented.")
@@ -145,7 +149,7 @@ mainLoop:
 					if err != nil {
 						fmt.Println("Unable to fetch market hours", err)
 					} else {
-						util.PrintMarketStatus(*marketHours)
+						util.PrintMarketStatus(marketHours)
 					}
 				case "4": // return to main loop
 					continue mainLoop

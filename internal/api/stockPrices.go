@@ -9,7 +9,7 @@ import (
 )
 
 // TimeSeriesProvider is an interface for fetching time series data.
-type TimeSeriesProvider interface {
+type TimeSeriesData interface {
 	GetTimeSeriesData() map[string]map[string]string
 }
 
@@ -125,22 +125,22 @@ type Ticker struct {
 }
 
 func FetchGainLoss(apiKey string) (*TopGainLoss, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=%v", apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=%s", apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching data: %v", err)
+		return nil, fmt.Errorf("error fetching data: %s", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error reading response body: %v", err)
+		return nil, fmt.Errorf("error reading response body: %s", err)
 	}
 
 	var marketData TopGainLoss
 	err = json.Unmarshal(body, &marketData)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing JSON: %v", err)
+		return nil, fmt.Errorf("error parsing JSON: %s", err)
 	}
 
 	return &marketData, nil
@@ -163,7 +163,7 @@ type Market struct {
 }
 
 func FetchMarketStatus(apiKey string) (*MarketHours, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=%v", apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=%s", apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch data: %s", err)
@@ -181,4 +181,79 @@ func FetchMarketStatus(apiKey string) (*MarketHours, error) {
 	}
 
 	return &marketStatus, nil
+}
+
+//! Company Overview
+
+type CompanyOverview struct {
+	Symbol                     string `json:"Symbol"`
+	AssetType                  string `json:"AssetType"`
+	Name                       string `json:"Name"`
+	Description                string `json:"Description"`
+	CIK                        string `json:"CIK"`
+	Exchange                   string `json:"Exchange"`
+	Currency                   string `json:"Currency"`
+	Country                    string `json:"Country"`
+	Sector                     string `json:"Sector"`
+	Industry                   string `json:"Industry"`
+	Address                    string `json:"Address"`
+	FiscalYearEnd              string `json:"FiscalYearEnd"`
+	LatestQuarter              string `json:"LatestQuarter"`
+	MarketCap                  string `json:"MarketCapitalization"`
+	EBITDA                     string `json:"EBITDA"`
+	PERatio                    string `json:"PERatio"`
+	PEGRatio                   string `json:"PEGRatio"`
+	BookVal                    string `json:"BookValue"`
+	Dividend                   string `json:"DividendPerShare"`
+	DividendYield              string `json:"DividendYield"`
+	EPS                        string `json:"EPS"`
+	ShareRevenue               string `json:"RevenuePerShareTTM"`
+	ProfitMargin               string `json:"ProfitMargin"`
+	OperatingMargin            string `json:"OperatingMarginTTM"`
+	ROA                        string `json:"ReturnOnAssetsTTM"`
+	ROE                        string `json:"ReturnOnEquityTTM"`
+	Revenue                    string `json:"RevenueTTM"`
+	GrossProfit                string `json:"GrossProfitTTM"`
+	DilutedEPSTTM              string `json:"DilutedEPSTTM"`
+	QuarterlyEarningsGrowthYOY string `json:"QuarterlyEarningsGrowthYOY"`
+	QuarterlyRevenueGrowthYOY  string `json:"QuarterlyRevenueGrowthYOY"`
+	AnalystTargetPrice         string `json:"AnalystTargetPrice"`
+	AnalystRatingStrongBuy     string `json:"AnalystRatingStrongBuy"`
+	AnalystRatingBuy           string `json:"AnalystRatingBuy"`
+	AnalystRatingHold          string `json:"AnalystRatingHold"`
+	AnalystRatingSell          string `json:"AnalystRatingSell"`
+	AnalystRatingStrongSell    string `json:"AnalystRatingStrongSell"`
+	TrailingPE                 string `json:"TrailingPE"`
+	ForwardPE                  string `json:"ForwardPE"`
+	PriceToSales               string `json:"PriceToSalesRatioTTM"`
+	PriceToBook                string `json:"PriceToBookRatio"`
+	EVToRevenue                string `json:"EVToRevenue"`
+	EVToEBITDA                 string `json:"Beta"`
+	YearHigh                   string `json:"52WeekHigh"`
+	YearLow                    string `json:"52WeekLow"`
+	FiddyDayMA                 string `json:"50DayMovingAverage"`
+	TwoHunnaDayMA              string `json:"200DayMovingAverage"`
+	SharesOutstanding          string `json:"SharesOutstanding"`
+	DividendDate               string `json:"DividendDate"`
+	ExDividendDate             string `json:"ExDividendDate"`
+}
+
+func FetchCompanyOverview(ticker, apiKey string) (*CompanyOverview, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=OVERVIEW&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var companyInfo CompanyOverview
+	if err := json.Unmarshal(body, &companyInfo); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return &companyInfo, nil
 }

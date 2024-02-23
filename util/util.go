@@ -7,7 +7,7 @@ import (
 	"github.com/jp-mango/mangomarkets/internal/api"
 )
 
-func PrintTimeSeriesData(provider api.TimeSeriesProvider) {
+func PrintTimeSeriesData(provider api.TimeSeriesData) {
 	tsData := provider.GetTimeSeriesData()
 
 	var dates []string
@@ -36,7 +36,7 @@ func PrintTimeSeriesData(provider api.TimeSeriesProvider) {
 	}
 }
 
-func PrintTopGainersAndLosers(marketData api.TopGainLoss) {
+func PrintTopGainersAndLosers(marketData *api.TopGainLoss) {
 	fmt.Println("Top Gainers:")
 
 	for _, gainer := range marketData.TopGainers {
@@ -49,10 +49,17 @@ func PrintTopGainersAndLosers(marketData api.TopGainLoss) {
 	}
 }
 
-func PrintMarketStatus(marketStatus api.MarketHours) {
+func PrintMarketStatus(marketStatus *api.MarketHours) {
 	fmt.Println(marketStatus.Endpoint)
 	for _, market := range marketStatus.Markets {
 		fmt.Printf("\nMarket Type: %s\nRegion: %s\nPrimary Exchanges: %s\nOpen: %s\nClose: %s\nStatus: %s\nNotes: %s\n",
 			market.MarketType, market.Region, market.PrimaryExchanges, market.LocalOpen, market.LocalClose, market.CurrentStatus, market.Notes)
 	}
+}
+
+func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
+	fmt.Printf("Overview for %s (%s)\n\n", companyInfo.Name, companyInfo.Symbol)
+	fmt.Printf("Description: %s\n", companyInfo.Description)
+	fmt.Printf("CIK: %s\n", companyInfo.CIK)
+	fmt.Printf("Exchange: %s\n", companyInfo.Exchange)
 }
