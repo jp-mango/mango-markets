@@ -108,8 +108,7 @@ mainLoop:
 								fmt.Println("Invalid interval")
 							}
 
-						case "2":
-							// TODO: Company Overview
+						case "2": // company overview
 							companyInfo, err := api.FetchCompanyOverview(ticker, apiKey)
 							if err != nil {
 								fmt.Printf("Unable to fetch company info for %s", ticker)
