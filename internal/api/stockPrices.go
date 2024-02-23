@@ -228,7 +228,8 @@ type CompanyOverview struct {
 	PriceToSales               string `json:"PriceToSalesRatioTTM"`
 	PriceToBook                string `json:"PriceToBookRatio"`
 	EVToRevenue                string `json:"EVToRevenue"`
-	EVToEBITDA                 string `json:"Beta"`
+	EVToEBITDA                 string `json:"EVToEBITDA"`
+	Beta                       string `json:"Beta"`
 	YearHigh                   string `json:"52WeekHigh"`
 	YearLow                    string `json:"52WeekLow"`
 	FiddyDayMA                 string `json:"50DayMovingAverage"`

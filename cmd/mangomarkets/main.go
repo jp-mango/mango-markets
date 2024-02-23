@@ -112,7 +112,7 @@ mainLoop:
 							// TODO: Company Overview
 							companyInfo, err := api.FetchCompanyOverview(ticker, apiKey)
 							if err != nil {
-								fmt.Println("Unable to fetch company info for", ticker)
+								fmt.Printf("Unable to fetch company info for %s", ticker)
 							} else {
 								util.PrintCompanyInfo(companyInfo)
 							}
