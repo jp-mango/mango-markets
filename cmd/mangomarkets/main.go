@@ -116,7 +116,6 @@ mainLoop:
 								util.PrintCompanyInfo(companyInfo)
 							}
 						case "3":
-							// TODO: Income Statement
 							fmt.Printf("[A]nnual or [Q]uarterly Income Statement for %s?\n", strings.ToUpper(ticker))
 							incomeTimeFrame, _ := reader.ReadString('\n')
 							incomeTimeFrame = strings.ToUpper(strings.TrimSpace(incomeTimeFrame))
