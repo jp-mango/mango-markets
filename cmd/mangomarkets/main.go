@@ -162,8 +162,15 @@ mainLoop:
 							}
 
 						case "5":
-							// TODO: Cash Flow
-							fmt.Println("Cash flow functionality to be implemented.")
+							fmt.Printf("[A]nnual or [Q]uarterly Cashflow for %s?\n", strings.ToUpper(ticker))
+							cashFlow, _ := reader.ReadString('\n')
+							cashFlow = strings.ToUpper(strings.TrimSpace(cashFlow))
+							switch cashFlow {
+							case "A":
+								//TODO: handle annual cashflow print
+							case "Q":
+								//TODO: handle quarterly cashflow print
+							}
 
 						case "6":
 							// TODO: Earnings

@@ -7,6 +7,7 @@ import (
 	"github.com/jp-mango/mangomarkets/internal/api"
 )
 
+// ! Time series Data
 func PrintTimeSeriesData(provider api.TimeSeriesData) {
 	tsData := provider.GetTimeSeriesData()
 
@@ -36,6 +37,7 @@ func PrintTimeSeriesData(provider api.TimeSeriesData) {
 	}
 }
 
+// ! top movers
 func PrintTopGainersAndLosers(marketData *api.TopGainLoss) {
 	fmt.Println("Top Gainers:")
 
@@ -49,6 +51,7 @@ func PrintTopGainersAndLosers(marketData *api.TopGainLoss) {
 	}
 }
 
+// ! market status
 func PrintMarketStatus(marketStatus *api.MarketHours) {
 	fmt.Println(marketStatus.Endpoint)
 	for _, market := range marketStatus.Markets {
@@ -57,6 +60,7 @@ func PrintMarketStatus(marketStatus *api.MarketHours) {
 	}
 }
 
+// ! company info
 func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
 	fmt.Printf("Overview for %s(%s)\n\n", companyInfo.Name, companyInfo.Symbol)
 	fmt.Printf("Description: %s\n", companyInfo.Description)
@@ -104,6 +108,7 @@ func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
 	fmt.Printf("ExDividend Date: %s\n", companyInfo.ExDividendDate)
 }
 
+// ! income statements
 func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
 	for i := len(incomeStatement.AnnualReport) - 1; i >= 0; i-- {
 		incomeStatement := incomeStatement.AnnualReport[i]
@@ -190,6 +195,7 @@ func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 	}
 }
 
+// ! balance sheets
 func PrintAnnualBalanceSheet(balanceSheet *api.BalanceSheet) {
 	for i := len(balanceSheet.AnnualReport) - 1; i >= 0; i-- {
 		balanceSheet := balanceSheet.AnnualReport[i]
@@ -301,3 +307,5 @@ func PrintQuarterlyBalanceSheet(balanceSheet *api.BalanceSheet) {
 			balanceSheet.TreasuryStock, balanceSheet.RetainedEarnings, balanceSheet.CommonStock, balanceSheet.CommonStockSharesOutstanding)
 	}
 }
+
+//! cashflow

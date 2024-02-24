@@ -384,3 +384,62 @@ func FetchBalanceSheet(ticker, apiKey string) (*BalanceSheet, error) {
 	}
 	return &balanceSheet, nil
 }
+
+// ! Cashflow
+type CashFlow struct {
+	Symbol          string           `json:"symbol"`
+	AnnualReport    []CashFlowReport `json:"annualReports"`
+	QuarterlyReport []CashFlowReport `json:"quarterlyReports"`
+}
+
+type CashFlowReport struct {
+	FiscalDateEnding                                          string `json:"fiscalDateEnding"`
+	Currency                                                  string `json:"reportedCurrency"`
+	OperatingCashFlow                                         string `json:"operatingCashflow"`
+	PaymentsForOperatingActivities                            string `json:"paymentsForOperatingActivities"`
+	ProceedsFromOperatingActivities                           string `json:"proceedsFromOperatingActivities"`
+	ChangeInOperatingLiabilities                              string `json:"changeInOperatingLiabilities"`
+	ChangeInOperatingAssets                                   string `json:"changeInOperatingAssets"`
+	DepreciationDepletionAndAmortization                      string `json:"depreciationDepletionAndAmortization"`
+	CapitalExpenditures                                       string `json:"capitalExpenditures"`
+	ChangeInReceivables                                       string `json:"changeInReceivables"`
+	ChangeInInventory                                         string `json:"changeInInventory"`
+	ProfitLoss                                                string `json:"profitLoss"`
+	CashflowFromInvestment                                    string `json:"cashflowFromInvestment"`
+	CashflowFromFinancing                                     string `json:"cashflowFromFinancing"`
+	ProceedsFromRepaymentsOfShortTermDebt                     string `json:"proceedsFromRepaymentsOfShortTermDebt"`
+	PaymentsForRepurchaseOfCommonStock                        string `json:"paymentsForRepurchaseOfCommonStock"`
+	PaymentsForRepurchaseOfEquity                             string `json:"paymentsForRepurchaseOfEquity"`
+	PaymentsForRepurchaseOfPreferredStock                     string `json:"paymentsForRepurchaseOfPreferredStock"`
+	DividendPayout                                            string `json:"dividendPayout"`
+	DividendPayoutCommonStock                                 string `json:"dividendPayoutCommonStock"`
+	DividendPayoutPreferredStock                              string `json:"dividendPayoutPreferredStock"`
+	ProceedsFromIssuanceOfCommonStock                         string `json:"proceedsFromIssuanceOfCommonStock"`
+	ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet string `json:"proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"`
+	ProceedsFromIssuanceOfPreferredStock                      string `json:"proceedsFromIssuanceOfPreferredStock"`
+	ProceedsFromRepurchaseOfEquity                            string `json:"proceedsFromRepurchaseOfEquity"`
+	ProceedsFromSaleOfTreasuryStock                           string `json:"proceedsFromSaleOfTreasuryStock"`
+	ChangeInCashAndCashEquivalents                            string `json:"changeInCashAndCashEquivalents"`
+	ChangeInExchangeRate                                      string `json:"changeInExchangeRate"`
+	NetIncome                                                 string `json:"netIncome"`
+}
+
+func FetchCashflow(ticker, apiKey string) (*CashFlow, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=CASH_FLOW&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var cashFlow CashFlow
+	if err := json.Unmarshal(body, &cashFlow); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return &cashFlow, nil
+}
