@@ -115,7 +115,7 @@ mainLoop:
 							} else {
 								util.PrintCompanyInfo(companyInfo)
 							}
-						case "3":
+						case "3": //income statements
 							fmt.Printf("[A]nnual or [Q]uarterly Income Statement for %s?\n", strings.ToUpper(ticker))
 							incomeTimeFrame, _ := reader.ReadString('\n')
 							incomeTimeFrame = strings.ToUpper(strings.TrimSpace(incomeTimeFrame))
@@ -139,8 +139,15 @@ mainLoop:
 							}
 
 						case "4":
-							// TODO: Balance Sheet
-							fmt.Println("Balance sheet functionality to be implemented.")
+							fmt.Printf("[A]nnual or [Q]uarterly Balance Sheet for %s?\n", strings.ToUpper(ticker))
+							balanceSheet, _ := reader.ReadString('\n')
+							balanceSheet = strings.ToUpper(strings.TrimSpace(balanceSheet))
+							switch balanceSheet {
+							case "A":
+								// TODO: get and print annual balance Sheet
+							case "Q":
+								// TODO: get and print quarterly balance Sheet
+							}
 
 						case "5":
 							// TODO: Cash Flow
@@ -161,7 +168,6 @@ mainLoop:
 						}
 					}
 				case "3":
-					// TODO: Global Market Status
 					fmt.Println("Global market status:")
 					marketHours, err := api.FetchMarketStatus(apiKey)
 					if err != nil {

@@ -187,3 +187,7 @@ func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 
 	}
 }
+
+func PrintBalanceSheet(balanceSheet *api.BalanceSheet) {
+
+}
