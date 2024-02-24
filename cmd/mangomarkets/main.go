@@ -131,7 +131,7 @@ mainLoop:
 							case "Q":
 								incomeStatement, err := api.FetchIncomeStatement(ticker, apiKey)
 								if err != nil {
-									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+									fmt.Printf("Unable to fetch quarterly income statement for %s", ticker)
 								} else {
 									util.PrintQuarterlyIncomeStatement(incomeStatement)
 									fmt.Println()
@@ -144,9 +144,21 @@ mainLoop:
 							balanceSheet = strings.ToUpper(strings.TrimSpace(balanceSheet))
 							switch balanceSheet {
 							case "A":
-								// TODO: get and print annual balance Sheet
+								balanceSheet, err := api.FetchBalanceSheet(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+								} else {
+									util.PrintAnnualBalanceSheet(balanceSheet)
+									fmt.Println()
+								}
 							case "Q":
-								// TODO: get and print quarterly balance Sheet
+								balanceSheet, err := api.FetchBalanceSheet(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to fetch quarterly income statement for %s", ticker)
+								} else {
+									util.PrintQuarterlyBalanceSheet(balanceSheet)
+									fmt.Println()
+								}
 							}
 
 						case "5":

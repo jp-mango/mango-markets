@@ -149,7 +149,7 @@ func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
 func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 	for _, incomeStatement := range incomeStatement.QuarterlyReport {
 		fmt.Printf(`
-		Fiscal Year End: %s
+		Fiscal Date End: %s
 		Report Currency: %s
 		Gross Profit: %s
 		Total Revenue: %s
@@ -188,6 +188,113 @@ func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 	}
 }
 
-func PrintBalanceSheet(balanceSheet *api.BalanceSheet) {
+func PrintAnnualBalanceSheet(balanceSheet *api.BalanceSheet) {
+	for _, balanceSheet := range balanceSheet.AnnualReport {
+		fmt.Printf(`
+		Fiscal Year End: %s
+		Currency: %s
+		Total Assets: %s
+		Total Current Assets: %s
+		Cash And Cash Equivalents At Carrying Value: %s
+		Cash And Short Term Investments: %s
+		Inventory: %s
+		Current Net Receivables: %s
+		Total Non-Current Assets: %s
+		Property Plant Equipment: %s
+		Accumulated Depreciation Amortization PPE: %s
+		Intangible Assets: %s
+		Intangible Assets Excluding Goodwill: %s
+		Goodwill: %s
+		Investments: %s
+		Long Term Investments: %s
+		Short Term Investments: %s
+		Other Current Assets: %s
+		Other Non Current Assets: %s
+		Total Liabilities: %s
+		Total Current Liabilities: %s
+		Current Accounts Payable: %s
+		Deferred Revenue: %s
+		Current Debt: %s
+		Short Term Debt: %s
+		Total Non-Current Liabilities: %s
+		Capital Lease Obligations: %s
+		Long Term Debt: %s
+		Current Long Term Debt: %s
+		Long Term Debt Non-Current: %s
+		Total Short Long Term Debt: %s
+		Other Current Liabilities: %s
+		Other Non-Current Liabilities: %s
+		Total Shareholder Equity: %s
+		Treasury Stock: %s
+		Retained Earnings: %s
+		Common Stock: %s
+		Common Stock Shares Outstanding: %s 
+		`, balanceSheet.FiscalEndDate, balanceSheet.Currency, balanceSheet.TotalAssets, balanceSheet.TotalCurrentAssets,
+			balanceSheet.CashAndCashEquivalentsAtCarryingValue, balanceSheet.CashAndShortTermInvestments, balanceSheet.Inventory,
+			balanceSheet.CurrentNetReceivables, balanceSheet.TotalNonCurrentAssets, balanceSheet.PropertyPlantEquipment,
+			balanceSheet.AccumulatedDepreciationAmortizationPPE, balanceSheet.IntangibleAssets, balanceSheet.IntangibleAssetsExcludingGoodwill,
+			balanceSheet.Goodwill, balanceSheet.Investments, balanceSheet.LongTermInvestments, balanceSheet.ShortTermInvestments,
+			balanceSheet.OtherCurrentAssets, balanceSheet.OtherCurrentAssets, balanceSheet.TotalLiabilities, balanceSheet.TotalCurrentLiabilities,
+			balanceSheet.CurrentAccountsPayable, balanceSheet.DeferredRevenue, balanceSheet.CurrentDebt, balanceSheet.ShortTermDebt,
+			balanceSheet.TotalNonCurrentLiabilities, balanceSheet.CapitalLeaseObligations, balanceSheet.LongTermDebt,
+			balanceSheet.CurrentLongTermDebt, balanceSheet.LongTermDebtNoncurrent, balanceSheet.ShortLongTermDebtTotal,
+			balanceSheet.OtherCurrentLiabilities, balanceSheet.OtherNonCurrentLiabilities, balanceSheet.TotalShareholderEquity,
+			balanceSheet.TreasuryStock, balanceSheet.RetainedEarnings, balanceSheet.CommonStock, balanceSheet.CommonStockSharesOutstanding)
+	}
+}
 
+func PrintQuarterlyBalanceSheet(balanceSheet *api.BalanceSheet) {
+	for i := len(balanceSheet.AnnualReport) - 1; i >= 0; i-- {
+		balanceSheet := balanceSheet.AnnualReport[i]
+		fmt.Printf(`
+		Fiscal Date End: %s
+		Currency: %s
+		Total Assets: %s
+		Total Current Assets: %s
+		Cash And Cash Equivalents At Carrying Value: %s
+		Cash And Short Term Investments: %s
+		Inventory: %s
+		Current Net Receivables: %s
+		Total Non-Current Assets: %s
+		Property Plant Equipment: %s
+		Accumulated Depreciation Amortization PPE: %s
+		Intangible Assets: %s
+		Intangible Assets Excluding Goodwill: %s
+		Goodwill: %s
+		Investments: %s
+		Long Term Investments: %s
+		Short Term Investments: %s
+		Other Current Assets: %s
+		Other Non Current Assets: %s
+		Total Liabilities: %s
+		Total Current Liabilities: %s
+		Current Accounts Payable: %s
+		Deferred Revenue: %s
+		Current Debt: %s
+		Short Term Debt: %s
+		Total Non-Current Liabilities: %s
+		Capital Lease Obligations: %s
+		Long Term Debt: %s
+		Current Long Term Debt: %s
+		Long Term Debt Non-Current: %s
+		Total Short Long Term Debt: %s
+		Other Current Liabilities: %s
+		Other Non-Current Liabilities: %s
+		Total Shareholder Equity: %s
+		Treasury Stock: %s
+		Retained Earnings: %s
+		Common Stock: %s
+		Common Stock Shares Outstanding: %s 
+		`, balanceSheet.FiscalEndDate, balanceSheet.Currency, balanceSheet.TotalAssets, balanceSheet.TotalCurrentAssets,
+			balanceSheet.CashAndCashEquivalentsAtCarryingValue, balanceSheet.CashAndShortTermInvestments, balanceSheet.Inventory,
+			balanceSheet.CurrentNetReceivables, balanceSheet.TotalNonCurrentAssets, balanceSheet.PropertyPlantEquipment,
+			balanceSheet.AccumulatedDepreciationAmortizationPPE, balanceSheet.IntangibleAssets, balanceSheet.IntangibleAssetsExcludingGoodwill,
+			balanceSheet.Goodwill, balanceSheet.Investments, balanceSheet.LongTermInvestments, balanceSheet.ShortTermInvestments,
+			balanceSheet.OtherCurrentAssets, balanceSheet.OtherCurrentAssets, balanceSheet.TotalLiabilities, balanceSheet.TotalCurrentLiabilities,
+			balanceSheet.CurrentAccountsPayable, balanceSheet.DeferredRevenue, balanceSheet.CurrentDebt, balanceSheet.ShortTermDebt,
+			balanceSheet.TotalNonCurrentLiabilities, balanceSheet.CapitalLeaseObligations, balanceSheet.LongTermDebt,
+			balanceSheet.CurrentLongTermDebt, balanceSheet.LongTermDebtNoncurrent, balanceSheet.ShortLongTermDebtTotal,
+			balanceSheet.OtherCurrentLiabilities, balanceSheet.OtherNonCurrentLiabilities, balanceSheet.TotalShareholderEquity,
+			balanceSheet.TreasuryStock, balanceSheet.RetainedEarnings, balanceSheet.CommonStock, balanceSheet.CommonStockSharesOutstanding)
+	}
 }
