@@ -105,7 +105,8 @@ func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
 }
 
 func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
-	for _, incomeStatement := range incomeStatement.AnnualReport {
+	for i := len(incomeStatement.AnnualReport) - 1; i >= 0; i-- {
+		incomeStatement := incomeStatement.AnnualReport[i]
 		fmt.Printf(`
 		Fiscal Year End: %s
 		Report Currency: %s
@@ -147,7 +148,8 @@ func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
 }
 
 func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
-	for _, incomeStatement := range incomeStatement.QuarterlyReport {
+	for i := len(incomeStatement.QuarterlyReport) - 1; i >= 0; i-- {
+		incomeStatement := incomeStatement.QuarterlyReport[i]
 		fmt.Printf(`
 		Fiscal Date End: %s
 		Report Currency: %s
@@ -189,7 +191,8 @@ func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 }
 
 func PrintAnnualBalanceSheet(balanceSheet *api.BalanceSheet) {
-	for _, balanceSheet := range balanceSheet.AnnualReport {
+	for i := len(balanceSheet.AnnualReport) - 1; i >= 0; i-- {
+		balanceSheet := balanceSheet.AnnualReport[i]
 		fmt.Printf(`
 		Fiscal Year End: %s
 		Currency: %s
@@ -244,8 +247,8 @@ func PrintAnnualBalanceSheet(balanceSheet *api.BalanceSheet) {
 }
 
 func PrintQuarterlyBalanceSheet(balanceSheet *api.BalanceSheet) {
-	for i := len(balanceSheet.AnnualReport) - 1; i >= 0; i-- {
-		balanceSheet := balanceSheet.AnnualReport[i]
+	for i := len(balanceSheet.QuarterlyReport) - 1; i >= 0; i-- {
+		balanceSheet := balanceSheet.QuarterlyReport[i]
 		fmt.Printf(`
 		Fiscal Date End: %s
 		Currency: %s
