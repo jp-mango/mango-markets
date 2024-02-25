@@ -443,3 +443,44 @@ func FetchCashflow(ticker, apiKey string) (*CashFlow, error) {
 	}
 	return &cashFlow, nil
 }
+
+// ! Earnings
+type Earnings struct {
+	Symbol            string                    `json:"symbol"`
+	AnnualEarnings    []AnnualEarningsReport    `json:"annualEarnings"`
+	QuarterlyEarnings []QuarterlyEarningsReport `json:"quarterlyEarnings"`
+}
+
+type AnnualEarningsReport struct {
+	FiscalDateEnding string `json:"fiscalDateEnding"`
+	ReportedEPS      string `json:"reportedEPS"`
+}
+
+type QuarterlyEarningsReport struct {
+	FiscalDateEnding   string `json:"fiscalDateEnding"`
+	ReportedDate       string `json:"reportedDate"`
+	ReportedEPS        string `json:"reportedEPS"`
+	EstimatedEPS       string `json:"estimatedEPS"`
+	Surprise           string `json:"surprise"`
+	SurprisePercentage string `json:"surprisePercentage"`
+}
+
+func FetchEarnings(ticker, apiKey string) (*Earnings, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=EARNINGS&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var earnings Earnings
+	if err := json.Unmarshal(body, &earnings); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return &earnings, nil
+}

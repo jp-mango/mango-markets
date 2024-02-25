@@ -184,7 +184,15 @@ mainLoop:
 
 						case "6":
 							// TODO: Earnings
-							fmt.Println("Earnings functionality to be implemented.")
+							fmt.Printf("[A]nnual or [Q]uarterly Earnings Report for %s?\n", strings.ToUpper(ticker))
+							earnings, _ := reader.ReadString('\n')
+							earnings = strings.ToUpper(strings.TrimSpace(earnings))
+							switch earnings {
+							case "A":
+								//TODO: implement annual earnings print
+							case "Q":
+								//TODO: implement quarterly earnings print
+							}
 
 						case "7": // return to stock market data
 							continue stockMarket
