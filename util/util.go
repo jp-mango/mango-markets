@@ -410,6 +410,8 @@ func PrintQuarterlyCashflow(cashflow *api.CashFlow) {
 	fmt.Println()
 }
 
+//! earnings
+
 func PrintAnnualEarnings(earnings *api.Earnings) {
 	for i := len(earnings.AnnualEarnings) - 1; i >= 0; i-- {
 		earnings := earnings.AnnualEarnings[i]
