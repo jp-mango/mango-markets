@@ -57,8 +57,9 @@ func PrintTopGainersAndLosers(marketData *api.TopGainLoss) {
 func PrintMarketStatus(marketStatus *api.MarketHours) {
 	fmt.Println(marketStatus.Endpoint)
 	for _, market := range marketStatus.Markets {
-		fmt.Printf("\nMarket Type: %s\nRegion: %s\nPrimary Exchanges: %s\nOpen: %s\nClose: %s\nStatus: %s\nNotes: %s\n",
+		fmt.Printf("\n• Market Type: %s\n• Region: %s\n• Primary Exchanges: %s\n• Open: %s\n• Close: %s\n• Status: %s\n• Notes: %s\n",
 			market.MarketType, market.Region, market.PrimaryExchanges, market.LocalOpen, market.LocalClose, market.CurrentStatus, market.Notes)
+		fmt.Println("-------------------------------------------------")
 	}
 }
 
