@@ -321,7 +321,7 @@ func PrintQuarterlyBalanceSheet(balanceSheet *api.BalanceSheet) {
 
 // ! cashflow
 func PrintAnnualCashflow(cashflow *api.CashFlow) {
-	for i := len(cashflow.AnnualReport) - 1; i > 0; i-- {
+	for i := len(cashflow.AnnualReport) - 1; i >= 0; i-- {
 		cashflow := cashflow.AnnualReport[i]
 		fmt.Printf(`
 		• Fiscal Year End: %s
@@ -366,7 +366,7 @@ func PrintAnnualCashflow(cashflow *api.CashFlow) {
 }
 
 func PrintQuarterlyCashflow(cashflow *api.CashFlow) {
-	for i := len(cashflow.AnnualReport) - 1; i > 0; i-- {
+	for i := len(cashflow.AnnualReport) - 1; i >= 0; i-- {
 		cashflow := cashflow.AnnualReport[i]
 		fmt.Printf(`
 		• Fiscal Date End: %s
