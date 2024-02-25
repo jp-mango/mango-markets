@@ -43,7 +43,6 @@ mainLoop:
 
 				switch choiceStock {
 				case "1":
-					// TODO: Implementation for top gainers and losers
 					fmt.Println("Retrieving top gainers and losers...")
 					gainLoss, err := api.FetchGainLoss(apiKey)
 					if err != nil {
@@ -226,7 +225,7 @@ mainLoop:
 				}
 			}
 		case "2":
-			// TODO: Financial News
+			// TODO: Financial News (search by ticker, search by topic,return to main menu)
 			fmt.Println("Financial news functionality to be implemented.")
 
 		case "3":
