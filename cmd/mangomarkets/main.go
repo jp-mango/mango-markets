@@ -138,7 +138,7 @@ mainLoop:
 								}
 							}
 
-						case "4":
+						case "4": // balance sheet
 							fmt.Printf("[A]nnual or [Q]uarterly Balance Sheet for %s?\n", strings.ToUpper(ticker))
 							balanceSheet, _ := reader.ReadString('\n')
 							balanceSheet = strings.ToUpper(strings.TrimSpace(balanceSheet))
@@ -161,7 +161,7 @@ mainLoop:
 								}
 							}
 
-						case "5":
+						case "5": //cashflow
 							fmt.Printf("[A]nnual or [Q]uarterly Cashflow for %s?\n", strings.ToUpper(ticker))
 							cashFlow, _ := reader.ReadString('\n')
 							cashFlow = strings.ToUpper(strings.TrimSpace(cashFlow))
@@ -183,15 +183,24 @@ mainLoop:
 							}
 
 						case "6":
-							// TODO: Earnings
 							fmt.Printf("[A]nnual or [Q]uarterly Earnings Report for %s?\n", strings.ToUpper(ticker))
 							earnings, _ := reader.ReadString('\n')
 							earnings = strings.ToUpper(strings.TrimSpace(earnings))
 							switch earnings {
 							case "A":
-								//TODO: implement annual earnings print
+								earnings, err := api.FetchEarnings(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to retrieve cashflow data for %s\n", ticker)
+								} else {
+									util.PrintAnnualEarnings(earnings)
+								}
 							case "Q":
-								//TODO: implement quarterly earnings print
+								earnings, err := api.FetchEarnings(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to retrieve cashflow data for %s\n", ticker)
+								} else {
+									util.PrintQuarterlyEarnings(earnings)
+								}
 							}
 
 						case "7": // return to stock market data
@@ -204,7 +213,7 @@ mainLoop:
 							continue tickerSearch
 						}
 					}
-				case "3":
+				case "3": // global market status
 					fmt.Println("Global market status:")
 					marketHours, err := api.FetchMarketStatus(apiKey)
 					if err != nil {

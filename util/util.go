@@ -409,3 +409,25 @@ func PrintQuarterlyCashflow(cashflow *api.CashFlow) {
 	}
 	fmt.Println()
 }
+
+func PrintAnnualEarnings(earnings *api.Earnings) {
+	for i := len(earnings.AnnualEarnings) - 1; i >= 0; i-- {
+		earnings := earnings.AnnualEarnings[i]
+		fmt.Printf("• Fiscal Year Ending: %s\n• Reported EPS: %s\n", earnings.FiscalDateEnding, earnings.ReportedEPS)
+		fmt.Println("-------------------------------------------------")
+	}
+}
+
+func PrintQuarterlyEarnings(earnings *api.Earnings) {
+	for i := len(earnings.QuarterlyEarnings) - 1; i >= 0; i-- {
+		earnings := earnings.QuarterlyEarnings[i]
+		fmt.Printf(`
+		• Fiscal Date End: %s
+		• Reported Date: %s
+		• Reported EPS: %s
+		• Surprise: %s
+		• Surprise Percentage: %s
+		`, earnings.FiscalDateEnding, earnings.ReportedDate, earnings.ReportedEPS, earnings.Surprise, earnings.SurprisePercentage)
+		fmt.Println("-------------------------------------------------")
+	}
+}
