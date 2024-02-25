@@ -123,7 +123,7 @@ mainLoop:
 							case "A":
 								incomeStatement, err := api.FetchIncomeStatement(ticker, apiKey)
 								if err != nil {
-									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+									fmt.Printf("Unable to fetch annual income statement for %s\n", ticker)
 								} else {
 									util.PrintAnnualIncomeStatement(incomeStatement)
 									fmt.Println()
@@ -131,7 +131,7 @@ mainLoop:
 							case "Q":
 								incomeStatement, err := api.FetchIncomeStatement(ticker, apiKey)
 								if err != nil {
-									fmt.Printf("Unable to fetch quarterly income statement for %s", ticker)
+									fmt.Printf("Unable to fetch quarterly income statement for %s\n", ticker)
 								} else {
 									util.PrintQuarterlyIncomeStatement(incomeStatement)
 									fmt.Println()
@@ -146,7 +146,7 @@ mainLoop:
 							case "A":
 								balanceSheet, err := api.FetchBalanceSheet(ticker, apiKey)
 								if err != nil {
-									fmt.Printf("Unable to fetch annual income statement for %s", ticker)
+									fmt.Printf("Unable to fetch annual income statement for %s\n", ticker)
 								} else {
 									util.PrintAnnualBalanceSheet(balanceSheet)
 									fmt.Println()
@@ -154,7 +154,7 @@ mainLoop:
 							case "Q":
 								balanceSheet, err := api.FetchBalanceSheet(ticker, apiKey)
 								if err != nil {
-									fmt.Printf("Unable to fetch quarterly income statement for %s", ticker)
+									fmt.Printf("Unable to fetch quarterly income statement for %s\n", ticker)
 								} else {
 									util.PrintQuarterlyBalanceSheet(balanceSheet)
 									fmt.Println()
@@ -167,9 +167,19 @@ mainLoop:
 							cashFlow = strings.ToUpper(strings.TrimSpace(cashFlow))
 							switch cashFlow {
 							case "A":
-								//TODO: handle annual cashflow print
+								cashFlow, err := api.FetchCashflow(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to retrieve cashflow data for %s\n", ticker)
+								} else {
+									util.PrintAnnualCashflow(cashFlow)
+								}
 							case "Q":
-								//TODO: handle quarterly cashflow print
+								cashFlow, err := api.FetchCashflow(ticker, apiKey)
+								if err != nil {
+									fmt.Printf("Unable to retrieve cashflow data for %s\n", ticker)
+								} else {
+									util.PrintQuarterlyCashflow(cashFlow)
+								}
 							}
 
 						case "6":
