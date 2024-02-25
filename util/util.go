@@ -39,16 +39,18 @@ func PrintTimeSeriesData(provider api.TimeSeriesData) {
 
 // ! top movers
 func PrintTopGainersAndLosers(marketData *api.TopGainLoss) {
-	fmt.Println("Top Gainers:")
+	fmt.Printf("\nTop Gainers:\n\n")
 
 	for _, gainer := range marketData.TopGainers {
 		fmt.Printf("Ticker: %s, Price: %s, Change: %s%%, Volume: %s\n", gainer.Ticker, gainer.Price, gainer.ChangePercentage, gainer.Volume)
 	}
-	fmt.Println("\nTop Losers:")
+	fmt.Println("----------------------------------------------------------------")
+	fmt.Print("\nTop Losers:\n\n")
 
 	for _, loser := range marketData.TopLosers {
 		fmt.Printf("Ticker: %s, Price: %s, Change: %s%%, Volume: %s\n", loser.Ticker, loser.Price, loser.ChangePercentage, loser.Volume)
 	}
+	fmt.Println("----------------------------------------------------------------")
 }
 
 // ! market status
@@ -106,6 +108,7 @@ func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
 	fmt.Printf("• Shares Outstanding: %s\n", companyInfo.SharesOutstanding)
 	fmt.Printf("• Dividend Date: %s\n", companyInfo.DividendDate)
 	fmt.Printf("• ExDividend Date: %s\n", companyInfo.ExDividendDate)
+	fmt.Println("-------------------------------------------------")
 	fmt.Println()
 }
 
@@ -149,7 +152,7 @@ func PrintAnnualIncomeStatement(incomeStatement *api.IncomeStatement) {
 			incomeStatement.IncomeBeforeTax, incomeStatement.IncomeTaxExpense, incomeStatement.InterestAndDebt,
 			incomeStatement.NetIncomeFromContinuingOperations, incomeStatement.ComprehensiveIncomeNetOfTax,
 			incomeStatement.EBIT, incomeStatement.EBITDA, incomeStatement.NetIncome)
-
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
@@ -193,7 +196,7 @@ func PrintQuarterlyIncomeStatement(incomeStatement *api.IncomeStatement) {
 			incomeStatement.IncomeBeforeTax, incomeStatement.IncomeTaxExpense, incomeStatement.InterestAndDebt,
 			incomeStatement.NetIncomeFromContinuingOperations, incomeStatement.ComprehensiveIncomeNetOfTax,
 			incomeStatement.EBIT, incomeStatement.EBITDA, incomeStatement.NetIncome)
-
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
@@ -252,6 +255,7 @@ func PrintAnnualBalanceSheet(balanceSheet *api.BalanceSheet) {
 			balanceSheet.CurrentLongTermDebt, balanceSheet.LongTermDebtNoncurrent, balanceSheet.ShortLongTermDebtTotal,
 			balanceSheet.OtherCurrentLiabilities, balanceSheet.OtherNonCurrentLiabilities, balanceSheet.TotalShareholderEquity,
 			balanceSheet.TreasuryStock, balanceSheet.RetainedEarnings, balanceSheet.CommonStock, balanceSheet.CommonStockSharesOutstanding)
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
@@ -309,6 +313,7 @@ func PrintQuarterlyBalanceSheet(balanceSheet *api.BalanceSheet) {
 			balanceSheet.CurrentLongTermDebt, balanceSheet.LongTermDebtNoncurrent, balanceSheet.ShortLongTermDebtTotal,
 			balanceSheet.OtherCurrentLiabilities, balanceSheet.OtherNonCurrentLiabilities, balanceSheet.TotalShareholderEquity,
 			balanceSheet.TreasuryStock, balanceSheet.RetainedEarnings, balanceSheet.CommonStock, balanceSheet.CommonStockSharesOutstanding)
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
@@ -354,6 +359,7 @@ func PrintAnnualCashflow(cashflow *api.CashFlow) {
 			cashflow.DividendPayout, cashflow.DividendPayoutCommonStock, cashflow.DividendPayoutPreferredStock, cashflow.ProceedsFromIssuanceOfCommonStock,
 			cashflow.ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet, cashflow.ProceedsFromIssuanceOfPreferredStock, cashflow.ProceedsFromRepurchaseOfEquity,
 			cashflow.ProceedsFromSaleOfTreasuryStock, cashflow.ChangeInCashAndCashEquivalents, cashflow.ChangeInExchangeRate, cashflow.NetIncome)
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
@@ -398,6 +404,7 @@ func PrintQuarterlyCashflow(cashflow *api.CashFlow) {
 			cashflow.DividendPayout, cashflow.DividendPayoutCommonStock, cashflow.DividendPayoutPreferredStock, cashflow.ProceedsFromIssuanceOfCommonStock,
 			cashflow.ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet, cashflow.ProceedsFromIssuanceOfPreferredStock, cashflow.ProceedsFromRepurchaseOfEquity,
 			cashflow.ProceedsFromSaleOfTreasuryStock, cashflow.ChangeInCashAndCashEquivalents, cashflow.ChangeInExchangeRate, cashflow.NetIncome)
+		fmt.Println("-------------------------------------------------")
 	}
 	fmt.Println()
 }
