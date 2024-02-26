@@ -50,3 +50,5 @@ To run Mango Markets, ensure you have Go installed and set up on your machine. C
 ```bash
 go run main.go
 ```
+
+Alternatively there is an exe located in bin
