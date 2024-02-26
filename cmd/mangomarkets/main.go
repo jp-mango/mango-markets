@@ -226,8 +226,33 @@ mainLoop:
 			}
 		case "2":
 			// TODO: Financial News (search by ticker, search by topic,return to main menu)
-			fmt.Println("Financial news functionality to be implemented.")
+			fmt.Printf("\nFinancial News:📰\n")
+			fmt.Println("1. Search By Ticker")
+			fmt.Println("2. Search By Topic")
+			fmt.Println("3. Return To Main Menu")
+			fmt.Print("Enter your choice: ")
 
+			newsChoice, _ := reader.ReadString('\n')
+			newsChoice = strings.TrimSpace(newsChoice)
+			switch newsChoice {
+			case "1":
+				var ticker string
+				fmt.Print("\nEnter ticker: ")
+				ticker, _ = reader.ReadString('\n')
+				ticker = strings.TrimSpace(ticker)
+
+				news, err := api.FetchNewsByTicker(ticker, apiKey)
+				if err != nil {
+					fmt.Println("Unable to fetch news for", strings.ToUpper(ticker))
+					fmt.Printf("Error: %s .", err)
+				} else {
+					util.PrintNewsByTicker(news)
+				}
+			case "2":
+				// TODO: search by topic
+			case "3":
+				continue mainLoop
+			}
 		case "3":
 			// TODO: Forex Market
 			fmt.Println("Forex market functionality to be implemented.")

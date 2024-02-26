@@ -433,3 +433,25 @@ func PrintQuarterlyEarnings(earnings *api.Earnings) {
 		fmt.Println("-------------------------------------------------")
 	}
 }
+
+// ! news
+func PrintNewsByTicker(news *api.News) {
+	for i := len(news.Feed) - 1; i >= 0; i-- {
+		news := news.Feed[i]
+		fmt.Printf(`
+		• Title: %s
+		• URL: %s
+		• Publish Date: %s
+		• Authors: %s
+		• Summary: %s
+		• Source: %s
+		• Source Domain: %s
+		`, news.Title, news.Url, news.PublishDate, news.Authors, news.Summary, news.Source, news.SourceDomain)
+		fmt.Println("-------------------------------------------------")
+
+	}
+}
+
+func PrintNewsByTopic(news *api.News) {
+
+}
