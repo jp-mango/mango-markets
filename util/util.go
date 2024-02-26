@@ -453,5 +453,5 @@ func PrintNewsByTicker(news *api.News) {
 }
 
 func PrintNewsByTopic(news *api.News) {
-
+	//TODO: append multiple topics to api url
 }

@@ -61,3 +61,8 @@ func FetchNewsByTicker(ticker, apiKey string) (*News, error) {
 	}
 	return &news, nil
 }
+
+func FetchNewsByTopic(topics []string, apiKey string) (*News, error) {
+	//TODO: translate num to topic and append to url
+	return nil, nil
+}

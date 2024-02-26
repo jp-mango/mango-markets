@@ -225,7 +225,6 @@ mainLoop:
 				}
 			}
 		case "2":
-			// TODO: Financial News (search by ticker, search by topic,return to main menu)
 			fmt.Printf("\nFinancial News:📰\n")
 			fmt.Println("1. Search By Ticker")
 			fmt.Println("2. Search By Topic")
@@ -249,7 +248,28 @@ mainLoop:
 					util.PrintNewsByTicker(news)
 				}
 			case "2":
-				// TODO: search by topic
+				fmt.Printf("\nAvailable Topics:\n\n")
+				fmt.Println("1. Blockchain")
+				fmt.Println("2. Earnings")
+				fmt.Println("3. IPO")
+				fmt.Println("4. Mergers & Acquisitions")
+				fmt.Println("5. Financial Markets")
+				fmt.Println("6. Economy - Fiscal Policy (e.g., tax reform, government spending)")
+				fmt.Println("7. Economy - Monetary Policy (e.g., interest rates, inflation)")
+				fmt.Println("8. Economy - Macro/Overall")
+				fmt.Println("9. Energy & Transportation")
+				fmt.Println("10. Finance")
+				fmt.Println("11. Life Science")
+				fmt.Println("12. Manufacturing")
+				fmt.Println("13. Real Estate & Construction")
+				fmt.Println("14. Retail & Wholesale")
+				fmt.Println("15. Technology")
+				fmt.Print("\nEnter choice(s) separated by a space: ")
+
+				topic, _ := reader.ReadString('\n')
+				// TODO: append multiple topics to api url
+				fmt.Print(topic)
+
 			case "3":
 				continue mainLoop
 			}
