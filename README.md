@@ -29,6 +29,7 @@ Mango Markets is a comprehensive financial application aimed at providing users 
 - **Technical Indicators**: Technical Analysis to make more informed dta driven solutions
 - **Portfolio Tracking**: Allowing users to track their investment portfolio performance directly within the application.
 - **Alerts and Notifications**: Setting up alerts for price movements, earnings announcements, or other significant events related to the user's interests.
+- **Charmbracelet**: Making my app more appealing with bubbletea, bubbles, lipgloss, etc.
 
 ## Technical Overview
 
