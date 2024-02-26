@@ -266,9 +266,9 @@ mainLoop:
 				fmt.Println("15. Technology")
 				fmt.Print("\nEnter choice(s) separated by a space: ")
 
-				topic, _ := reader.ReadString('\n')
+				topics, _ := reader.ReadString('\n')
 				// TODO: append multiple topics to api url
-				fmt.Print(topic)
+				fmt.Print(topics)
 
 			case "3":
 				continue mainLoop

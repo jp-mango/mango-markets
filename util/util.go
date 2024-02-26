@@ -448,8 +448,22 @@ func PrintNewsByTicker(news *api.News) {
 		• Source Domain: %s
 		`, news.Title, news.Url, news.PublishDate, news.Authors, news.Summary, news.Source, news.SourceDomain)
 		fmt.Println("-------------------------------------------------")
-
 	}
+}
+
+func ConstructTopicsURL(apiKey string, topics []string) string {
+	url := "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics="
+	topicString := []string{}
+	for i := 0; i < len(topics); i++ {
+		switch topics[i] {
+		case "1":
+			topicString = append(topicString, "blockchain")
+			//TODO: match cases to string
+		default:
+			return "Not a valid choice"
+		}
+	}
+	return url
 }
 
 func PrintNewsByTopic(news *api.News) {
