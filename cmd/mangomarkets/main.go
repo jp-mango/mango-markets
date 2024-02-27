@@ -265,6 +265,7 @@ mainLoop:
 					continue newsSearch
 				case "2":
 					fmt.Printf("\nAvailable Topics:\n\n")
+					fmt.Println("0. Return To Previous Menu")
 					fmt.Println("1. Blockchain")
 					fmt.Println("2. Earnings")
 					fmt.Println("3. IPO")
@@ -280,18 +281,23 @@ mainLoop:
 					fmt.Println("13. Real Estate & Construction")
 					fmt.Println("14. Retail & Wholesale")
 					fmt.Println("15. Technology")
-					fmt.Print("\nEnter choice(s) separated by a space: ")
+					fmt.Print("\nEnter choice: ")
 
 					topics, _ := reader.ReadString('\n')
 					topics = strings.TrimSpace(topics)
-					userTopics := strings.Split(topics, " ")
-					news, err := api.FetchNewsByTopic(util.ConstructTopicsURL(apiKey, userTopics), apiKey)
-					if err != nil {
-						fmt.Println("Unable to fetch news for those topics")
+
+					if topics == "0" {
+						continue newsSearch
 					} else {
-						util.PrintNews(news)
+						userTopics := strings.Split(topics, " ")
+						news, err := api.FetchNewsByTopic(util.ConstructTopicsURL(apiKey, userTopics), apiKey)
+						if err != nil {
+							fmt.Println("Unable to fetch news for those topics")
+						} else {
+							util.PrintNews(news)
+						}
+						continue newsSearch
 					}
-					continue newsSearch
 
 				case "3":
 					continue mainLoop
