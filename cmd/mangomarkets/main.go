@@ -29,7 +29,7 @@ mainLoop:
 		choiceMain = strings.TrimSpace(choiceMain)
 
 		switch choiceMain {
-		case "1":
+		case "1": // Stock Market
 		stockMarket:
 			for {
 				fmt.Println("\nStock Market Data:🏦")
@@ -52,13 +52,13 @@ mainLoop:
 					}
 
 				case "2":
+					var ticker string
+					fmt.Print("\nEnter ticker: ")
+					ticker, _ = reader.ReadString('\n')
+					ticker = strings.TrimSpace(ticker)
+
 				tickerSearch:
 					for {
-						var ticker string
-						fmt.Print("\nEnter ticker: ")
-						ticker, _ = reader.ReadString('\n')
-						ticker = strings.TrimSpace(ticker)
-
 						fmt.Printf("\nWhat data would you like to see for %s?\n", strings.ToUpper(ticker))
 						fmt.Println("1. Stock Price")
 						fmt.Println("2. Company Overview")
@@ -114,6 +114,7 @@ mainLoop:
 							} else {
 								util.PrintCompanyInfo(companyInfo)
 							}
+
 						case "3": //income statements
 							fmt.Printf("[A]nnual or [Q]uarterly Income Statement for %s?\n", strings.ToUpper(ticker))
 							incomeTimeFrame, _ := reader.ReadString('\n')
@@ -204,14 +205,27 @@ mainLoop:
 
 						case "7": // return to stock market data
 							continue stockMarket
+
+						default:
+							fmt.Println("Invalid choice. Please enter a valid number or press '7' to return.")
+							continue tickerSearch
 						}
 
 						if tickerChoice != "7" {
-							fmt.Println("Press any key to return to Ticker Search")
-							_, _ = reader.ReadString('\n')
-							continue tickerSearch
+							fmt.Printf("\nContinue looking at %s data? [y]/[n]\n", strings.ToUpper(ticker))
+							r, _ := reader.ReadString('\n')
+							r = strings.ToLower(strings.TrimSpace(r))
+							if r == "y" {
+								continue tickerSearch
+							} else if r == "n" {
+								break tickerSearch // This will exit the tickerSearch loop and proceed to the next iteration of the enclosing loop
+							} else {
+								fmt.Println("Invalid response. Returning to ticker search.")
+								continue tickerSearch
+							}
 						}
 					}
+
 				case "3": // global market status
 					fmt.Println("Global market status:")
 					marketHours, err := api.FetchMarketStatus(apiKey)
@@ -224,7 +238,7 @@ mainLoop:
 					continue mainLoop
 				}
 			}
-		case "2":
+		case "2": // News
 		newsSearch:
 			for {
 				fmt.Printf("\nFinancial News:📰\n")
@@ -283,16 +297,15 @@ mainLoop:
 					continue mainLoop
 				}
 			}
-
-		case "3":
+		case "3": // Forex
 			// TODO: Forex Market
 			fmt.Println("Forex market functionality to be implemented.")
 
-		case "4":
+		case "4": // Crypto
 			// TODO: Crypto Market
 			fmt.Println("crypto market functionality to be implemented.")
 
-		case "5":
+		case "5": // Exit
 			fmt.Println("\nMay your profits be HIGH and your risks LOW! 🥭")
 			break mainLoop
 		}
