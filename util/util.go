@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/jp-mango/mangomarkets/internal/api"
 )
@@ -435,7 +436,7 @@ func PrintQuarterlyEarnings(earnings *api.Earnings) {
 }
 
 // ! news
-func PrintNewsByTicker(news *api.News) {
+func PrintNews(news *api.News) {
 	for i := len(news.Feed) - 1; i >= 0; i-- {
 		news := news.Feed[i]
 		fmt.Printf(`
@@ -452,20 +453,46 @@ func PrintNewsByTicker(news *api.News) {
 }
 
 func ConstructTopicsURL(apiKey string, topics []string) string {
-	url := "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics="
 	topicString := []string{}
-	for i := 0; i < len(topics); i++ {
-		switch topics[i] {
+
+topicConstruct:
+	for _, topic := range topics {
+		switch topic {
 		case "1":
 			topicString = append(topicString, "blockchain")
-			//TODO: match cases to string
+		case "2":
+			topicString = append(topicString, "earnings")
+		case "3":
+			topicString = append(topicString, "ipo")
+		case "4":
+			topicString = append(topicString, "mergers_and_acquisitions")
+		case "5":
+			topicString = append(topicString, "financial_markets")
+		case "6":
+			topicString = append(topicString, "economy_fiscal")
+		case "7":
+			topicString = append(topicString, "economy_monetary")
+		case "8":
+			topicString = append(topicString, "economy_macro")
+		case "9":
+			topicString = append(topicString, "energy_transportation")
+		case "10":
+			topicString = append(topicString, "finance")
+		case "11":
+			topicString = append(topicString, "life_sciences")
+		case "12":
+			topicString = append(topicString, "manufacturing")
+		case "13":
+			topicString = append(topicString, "real_estate")
+		case "14":
+			topicString = append(topicString, "retail_wholesale")
+		case "15":
+			topicString = append(topicString, "technology")
 		default:
-			return "Not a valid choice"
+			break topicConstruct
 		}
 	}
-	return url
-}
-
-func PrintNewsByTopic(news *api.News) {
-	//TODO: append multiple topics to api url
+	userTopics := strings.Join(topicString, ",")
+	topicUrl := fmt.Sprintf("https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=%s&apikey=%s", userTopics, apiKey)
+	return topicUrl
 }

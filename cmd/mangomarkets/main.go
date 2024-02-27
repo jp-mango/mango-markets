@@ -225,54 +225,65 @@ mainLoop:
 				}
 			}
 		case "2":
-			fmt.Printf("\nFinancial News:📰\n")
-			fmt.Println("1. Search By Ticker")
-			fmt.Println("2. Search By Topic")
-			fmt.Println("3. Return To Main Menu")
-			fmt.Print("Enter your choice: ")
+		newsSearch:
+			for {
+				fmt.Printf("\nFinancial News:📰\n")
+				fmt.Println("1. Search By Ticker")
+				fmt.Println("2. Search By Topic")
+				fmt.Println("3. Return To Main Menu")
+				fmt.Print("Enter your choice: ")
 
-			newsChoice, _ := reader.ReadString('\n')
-			newsChoice = strings.TrimSpace(newsChoice)
-			switch newsChoice {
-			case "1":
-				var ticker string
-				fmt.Print("\nEnter ticker: ")
-				ticker, _ = reader.ReadString('\n')
-				ticker = strings.TrimSpace(ticker)
+				newsChoice, _ := reader.ReadString('\n')
+				newsChoice = strings.TrimSpace(newsChoice)
+				switch newsChoice {
+				case "1":
+					var ticker string
+					fmt.Print("\nEnter ticker: ")
+					ticker, _ = reader.ReadString('\n')
+					ticker = strings.TrimSpace(ticker)
 
-				news, err := api.FetchNewsByTicker(ticker, apiKey)
-				if err != nil {
-					fmt.Println("Unable to fetch news for", strings.ToUpper(ticker))
-					fmt.Printf("Error: %s .", err)
-				} else {
-					util.PrintNewsByTicker(news)
+					news, err := api.FetchNewsByTicker(ticker, apiKey)
+					if err != nil {
+						fmt.Println("Unable to fetch news for", strings.ToUpper(ticker))
+					} else {
+						util.PrintNews(news)
+					}
+					continue newsSearch
+				case "2":
+					fmt.Printf("\nAvailable Topics:\n\n")
+					fmt.Println("1. Blockchain")
+					fmt.Println("2. Earnings")
+					fmt.Println("3. IPO")
+					fmt.Println("4. Mergers & Acquisitions")
+					fmt.Println("5. Financial Markets")
+					fmt.Println("6. Economy - Fiscal Policy (e.g., tax reform, government spending)")
+					fmt.Println("7. Economy - Monetary Policy (e.g., interest rates, inflation)")
+					fmt.Println("8. Economy - Macro/Overall")
+					fmt.Println("9. Energy & Transportation")
+					fmt.Println("10. Finance")
+					fmt.Println("11. Life Science")
+					fmt.Println("12. Manufacturing")
+					fmt.Println("13. Real Estate & Construction")
+					fmt.Println("14. Retail & Wholesale")
+					fmt.Println("15. Technology")
+					fmt.Print("\nEnter choice(s) separated by a space: ")
+
+					topics, _ := reader.ReadString('\n')
+					topics = strings.TrimSpace(topics)
+					userTopics := strings.Split(topics, " ")
+					news, err := api.FetchNewsByTopic(util.ConstructTopicsURL(apiKey, userTopics), apiKey)
+					if err != nil {
+						fmt.Println("Unable to fetch news for those topics")
+					} else {
+						util.PrintNews(news)
+					}
+					continue newsSearch
+
+				case "3":
+					continue mainLoop
 				}
-			case "2":
-				fmt.Printf("\nAvailable Topics:\n\n")
-				fmt.Println("1. Blockchain")
-				fmt.Println("2. Earnings")
-				fmt.Println("3. IPO")
-				fmt.Println("4. Mergers & Acquisitions")
-				fmt.Println("5. Financial Markets")
-				fmt.Println("6. Economy - Fiscal Policy (e.g., tax reform, government spending)")
-				fmt.Println("7. Economy - Monetary Policy (e.g., interest rates, inflation)")
-				fmt.Println("8. Economy - Macro/Overall")
-				fmt.Println("9. Energy & Transportation")
-				fmt.Println("10. Finance")
-				fmt.Println("11. Life Science")
-				fmt.Println("12. Manufacturing")
-				fmt.Println("13. Real Estate & Construction")
-				fmt.Println("14. Retail & Wholesale")
-				fmt.Println("15. Technology")
-				fmt.Print("\nEnter choice(s) separated by a space: ")
-
-				topics, _ := reader.ReadString('\n')
-				// TODO: append multiple topics to api url
-				fmt.Print(topics)
-
-			case "3":
-				continue mainLoop
 			}
+
 		case "3":
 			// TODO: Forex Market
 			fmt.Println("Forex market functionality to be implemented.")

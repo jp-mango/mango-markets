@@ -62,7 +62,21 @@ func FetchNewsByTicker(ticker, apiKey string) (*News, error) {
 	return &news, nil
 }
 
-func FetchNewsByTopic(topics []string, apiKey string) (*News, error) {
-	//TODO: translate num to topic and append to url
-	return nil, nil
+func FetchNewsByTopic(topicsUrl, apiKey string) (*News, error) {
+	resp, err := http.Get(topicsUrl)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch data: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %s", err)
+	}
+
+	var news News
+	if err := json.Unmarshal(body, &news); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return &news, nil
 }
