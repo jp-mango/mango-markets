@@ -66,7 +66,7 @@ func PrintMarketStatus(marketStatus *api.MarketHours) {
 
 // ! company info
 func PrintCompanyInfo(companyInfo *api.CompanyOverview) {
-	fmt.Printf("Overview for %s(%s)\n\n", companyInfo.Name, companyInfo.Symbol)
+	fmt.Printf("\nOverview for %s(%s)\n\n", companyInfo.Name, companyInfo.Symbol)
 	fmt.Printf("• Description: %s\n", companyInfo.Description)
 	fmt.Printf("• Central Index Key (CIK): %s\n", companyInfo.CIK)
 	fmt.Printf("• Exchange: %s\n", companyInfo.Exchange)
