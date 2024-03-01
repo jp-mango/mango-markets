@@ -305,7 +305,6 @@ mainLoop:
 			}
 		case "3": // Forex
 			// TODO: Forex Market
-			fmt.Println("Forex market functionality to be implemented.")
 
 		case "4": // Crypto
 			// TODO: Crypto Market
