@@ -36,6 +36,7 @@ func PrintTimeSeriesData(provider api.TimeSeriesData) {
 		}
 		fmt.Println("----------------")
 	}
+	fmt.Println("Last Refreshed:")
 }
 
 // ! top movers
