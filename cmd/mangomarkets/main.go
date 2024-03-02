@@ -304,7 +304,13 @@ mainLoop:
 				}
 			}
 		case "3": // Forex
-			// TODO: Forex Market
+			/*
+				TODO: get contents of physical_currency.csv into array
+				TODO: take user input and compare against available list of currencies
+				TODO: if in list, use in API search
+				TODO: if not in list, prompt for another entry
+			*/
+			fmt.Println()
 
 		case "4": // Crypto
 			// TODO: Crypto Market
