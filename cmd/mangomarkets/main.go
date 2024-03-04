@@ -304,13 +304,50 @@ mainLoop:
 				}
 			}
 		case "3": // Forex
-			/*
-				TODO: get contents of physical_currency.csv into array
-				TODO: take user input and compare against available list of currencies
-				TODO: if in list, use in API search
-				TODO: if not in list, prompt for another entry
-			*/
-			fmt.Println()
+		currencySearch:
+			for {
+				fmt.Println("\n Forex Data:💱")
+				fmt.Println("1. Search Currency Pair")
+				fmt.Println("2. Return To Main Menu")
+				choice, _ := reader.ReadString('\n')
+				choice = strings.TrimSpace(choice)
+
+				switch choice {
+				case "1":
+					fmt.Print("\nEnter base currency: ")
+					base, _ := reader.ReadString('\n')
+					base = strings.ToUpper(strings.TrimSpace(base))
+
+					fmt.Print("\nEnter the quote currency: ")
+					quote, _ := reader.ReadString('\n')
+					quote = strings.ToUpper(strings.TrimSpace(quote))
+
+					if util.ForexVerification(base) && util.ForexVerification(quote) && (base != quote) {
+						fmt.Printf("\n1. %s/%s Exchange Rate\n", base, quote)
+						fmt.Printf("2. %s/%s Time Series Data\n", base, quote)
+						choice, _ := reader.ReadString('\n')
+						choice = strings.TrimSpace(choice)
+						switch choice {
+						case "1":
+							//TODO: implement exchange rate data fetch
+						case "2":
+							//TODO: implement time series data pull
+						}
+					} else if util.ForexVerification(base) && !util.ForexVerification(quote) {
+						fmt.Println("Quote Not Found")
+					} else if !util.ForexVerification(base) && util.ForexVerification(quote) {
+						fmt.Println("Base Not Found")
+					} else if base == quote {
+						fmt.Println("Please enter different values for the base and quote currencies")
+					} else {
+						continue currencySearch
+					}
+
+				case "2":
+					continue mainLoop
+				}
+
+			}
 
 		case "4": // Crypto
 			// TODO: Crypto Market
