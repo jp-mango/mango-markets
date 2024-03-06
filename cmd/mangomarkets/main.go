@@ -303,6 +303,7 @@ mainLoop:
 					continue mainLoop
 				}
 			}
+
 		case "3": // Forex
 		forexMenu:
 			for {
@@ -333,7 +334,6 @@ mainLoop:
 							choice = strings.TrimSpace(choice)
 							switch choice {
 							case "1":
-								//TODO: implement exchange rate data fetch
 								fmt.Printf("Exchange rate between %s and %s", base, quote)
 								exchangeRate, err := api.FetchExchangeRate(apiKey, base, quote)
 								if err != nil {
@@ -379,7 +379,6 @@ mainLoop:
 							fmt.Println("Base Not Found")
 						} else if base == quote {
 							fmt.Println("Please enter different values for the base and quote currencies")
-
 						} else {
 							continue forexMenu
 						}
@@ -388,7 +387,6 @@ mainLoop:
 						continue mainLoop
 					}
 				}
-
 			}
 
 		case "4": // Crypto
