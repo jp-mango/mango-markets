@@ -370,6 +370,7 @@ mainLoop:
 										util.PrintTimeSeriesData(tsDataMonthly, tsDataMonthly.MetaData)
 									}
 								}
+
 							case "3":
 								continue forexSearch
 							}
