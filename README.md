@@ -33,13 +33,7 @@ Mango Markets is a comprehensive financial application aimed at providing users 
 
 ## Technical Overview
 
-Mango Markets is built with Go, utilizing various libraries for API requests, data processing, and terminal interaction. Key libraries include:
-
-- `bufio` and `fmt` for basic input/output operations.
-- `strings` for string manipulation.
-- `github.com/jp-mango/mangomarkets/internal/api` for interfacing with the Alpha Vantage API.
-- `github.com/jp-mango/mangomarkets/internal/config` for configuration management.
-- `github.com/jp-mango/mangomarkets/util` for utility functions and data formatting.
+Mango Markets is built with Go, utilizing the standard library for API requests, data processing, and terminal interaction.
 
 The application operates in a loop, prompting the user to navigate through the main menu to access different functionalities. Data fetched from the Alpha Vantage API is processed and displayed in a user-friendly format, offering valuable financial insights directly in the terminal.
 
