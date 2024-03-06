@@ -73,7 +73,7 @@ func FetchForexTimeSeriesWeekly(apiKey, fromSymbol, toSymbol string) (ForexTimeS
 	return ftswData, nil
 }
 
-// Monthly Forex Time Series
+// !  Monthly Forex Time Series
 type ForexTimeSeriesMonthly struct {
 	MetaData   ForexMetaData                `json:"Meta Data"`
 	TimeSeries map[string]map[string]string `json:"Time Series FX (Monthly)"`
@@ -97,4 +97,35 @@ func FetchForexTimeSeriesMonthly(apiKey, fromSymbol, toSymbol string) (ForexTime
 		return ForexTimeSeriesMonthly{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 	return ftsmData, nil
+}
+
+// ! Exchange Rate
+type ExchangeRate struct {
+	FromCurrencyCode string `json:"1. From_Currency Code"`
+	FromCurrencyName string `json:"2. From_Currency Name"`
+	ToCurrencyCode   string `json:"3. To_Currency Code"`
+	ToCurrencyName   string `json:"4. To_Currency Name"`
+	ExchangeRate     string `json:"5. Exchange Rate"`
+	LastRefreshed    string `json:"6. Last Refreshed"`
+	TimeZone         string `json:"7. Time Zone"`
+	BidPrice         string `json:"8. Bid Price"`
+	AskPrice         string `json:"9. Ask Price"`
+}
+
+func FetchExchangeRate(apiKey, fromCurrency, toCurrency string) (ExchangeRate, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=%s&to_currency=%s&apikey=%s", fromCurrency, toCurrency, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return ExchangeRate{}, fmt.Errorf("unable to hit endpoint: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var data struct {
+		ExchangeRate ExchangeRate `json:"Realtime Currency Exchange Rate"`
+	}
+	content, _ := io.ReadAll(resp.Body)
+	if err := json.Unmarshal(content, &data); err != nil {
+		return ExchangeRate{}, fmt.Errorf("error parsing API content: %v", err)
+	}
+	return data.ExchangeRate, nil
 }
