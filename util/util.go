@@ -9,34 +9,53 @@ import (
 )
 
 // ! Time series Data
-func PrintTimeSeriesData(provider api.TimeSeriesData) {
+func PrintTimeSeriesData(provider api.TimeSeriesData, metadata interface{}) {
 	tsData := provider.GetTimeSeriesData()
 
 	var dates []string
 	for date := range tsData {
 		dates = append(dates, date)
 	}
+
 	// Sorts in ascending order
 	sort.Slice(dates, func(i, j int) bool {
 		return dates[i] < dates[j]
 	})
+
 	for _, date := range dates {
 		fmt.Printf("Date: %s\n", date)
+
 		// Collect keys of the inner map
 		var keys []string
 		for key := range tsData[date] {
 			keys = append(keys, key)
 		}
+
 		// Sort the keys to ensure consistent order
 		sort.Strings(keys)
+
 		// Now iterate over the sorted keys
 		for _, key := range keys {
 			value := tsData[date][key]
 			fmt.Printf("%s: %s\n", key, value)
 		}
+
 		fmt.Println("----------------")
 	}
-	fmt.Println("Last Refreshed:")
+
+	// Check the type of metadata and print the "Last Refreshed" value accordingly
+	switch m := metadata.(type) {
+	case api.ForexMetaData:
+		fmt.Printf("Last Refreshed: %s\n", m.LastRefreshed)
+	case api.TimeSeriesDaily:
+		fmt.Printf("Last Refreshed: %s\n", m.MetaData.LastRefreshed)
+	case api.TimeSeriesWeekly:
+		fmt.Printf("Last Refreshed: %s\n", m.MetaData.LastRefreshed)
+	case api.TimeSeriesMonthly:
+		fmt.Printf("Last Refreshed: %s\n", m.MetaData.LastRefreshed)
+	default:
+		fmt.Println("Last Refreshed: Unknown")
+	}
 }
 
 // ! top movers

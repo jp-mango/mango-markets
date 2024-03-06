@@ -85,7 +85,7 @@ mainLoop:
 								if err != nil {
 									fmt.Println("Unable to load daily time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataDaily)
+									util.PrintTimeSeriesData(tsDataDaily, tsDataDaily.MetaData)
 								}
 							case "2": // weekly prices
 								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
@@ -93,7 +93,7 @@ mainLoop:
 								if err != nil {
 									fmt.Println("Unable to load weekly time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataWeekly)
+									util.PrintTimeSeriesData(tsDataWeekly, tsDataWeekly.MetaData)
 								}
 							case "3": // monthly prices
 								fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
@@ -101,7 +101,7 @@ mainLoop:
 								if err != nil {
 									fmt.Println("Unable to load monthly time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataMonthly)
+									util.PrintTimeSeriesData(tsDataMonthly, tsDataMonthly.MetaData)
 								}
 							default:
 								fmt.Println("Invalid interval")
@@ -334,7 +334,12 @@ mainLoop:
 							switch choice {
 							case "1":
 								//TODO: implement exchange rate data fetch
-								fmt.Println("")
+								fmt.Printf("Exchange rate between %s and %s", base, quote)
+								exchangeRate, err := api.FetchExchangeRate(apiKey, base, quote)
+								if err != nil {
+									fmt.Printf("Unable to  retrieve exchange rate for (%s/%s): %s", base, quote, err)
+								}
+								fmt.Println(exchangeRate.ExchangeRate)
 							case "2":
 								fmt.Print("Time interval?\n[1] = daily, [2] = weekly, [3] = monthly: ")
 								choice, _ := reader.ReadString('\n')
@@ -344,9 +349,9 @@ mainLoop:
 									fmt.Printf("\nDaily prices for (%s/%s):\n", base, quote)
 									tsDataDaily, err := api.FetchForexTimeSeriesDaily(apiKey, base, quote)
 									if err != nil {
-										fmt.Printf("Unable to load daily time series data for (%s/%s)\n", quote, base)
+										fmt.Printf("Unable to load daily time series data for (%s/%s): %s\n", quote, base, err)
 									} else {
-										util.PrintTimeSeriesData(tsDataDaily)
+										util.PrintTimeSeriesData(tsDataDaily, tsDataDaily.MetaData)
 									}
 								case "2":
 									fmt.Printf("\nWeekly prices for (%s/%s):\n", base, quote)
@@ -354,7 +359,7 @@ mainLoop:
 									if err != nil {
 										fmt.Printf("Unable to load weekly time series data for (%s/%s)\n", quote, base)
 									} else {
-										util.PrintTimeSeriesData(tsDataWeekly)
+										util.PrintTimeSeriesData(tsDataWeekly, tsDataWeekly.MetaData)
 									}
 								case "3":
 									fmt.Printf("\nMonthly prices for (%s/%s):\n", base, quote)
@@ -362,7 +367,7 @@ mainLoop:
 									if err != nil {
 										fmt.Printf("Unable to load monthly time series data for (%s/%s)\n", quote, base)
 									} else {
-										util.PrintTimeSeriesData(tsDataMonthly)
+										util.PrintTimeSeriesData(tsDataMonthly, tsDataMonthly.MetaData)
 									}
 								}
 							case "3":
