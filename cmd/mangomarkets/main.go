@@ -304,7 +304,7 @@ mainLoop:
 				}
 			}
 		case "3": // Forex
-		currencySearch:
+		forexMenu:
 			for {
 				fmt.Println("\n Forex Data:💱")
 				fmt.Println("1. Search Currency Pair")
@@ -312,39 +312,76 @@ mainLoop:
 				choice, _ := reader.ReadString('\n')
 				choice = strings.TrimSpace(choice)
 
-				switch choice {
-				case "1":
-					fmt.Print("\nEnter base currency: ")
-					base, _ := reader.ReadString('\n')
-					base = strings.ToUpper(strings.TrimSpace(base))
+			forexSearch:
+				for {
+					switch choice {
 
-					fmt.Print("\nEnter the quote currency: ")
-					quote, _ := reader.ReadString('\n')
-					quote = strings.ToUpper(strings.TrimSpace(quote))
+					case "1":
+						fmt.Print("\nEnter base currency: ")
+						base, _ := reader.ReadString('\n')
+						base = strings.ToUpper(strings.TrimSpace(base))
 
-					if util.ForexVerification(base) && util.ForexVerification(quote) && (base != quote) {
-						fmt.Printf("\n1. %s/%s Exchange Rate\n", base, quote)
-						fmt.Printf("2. %s/%s Time Series Data\n", base, quote)
-						choice, _ := reader.ReadString('\n')
-						choice = strings.TrimSpace(choice)
-						switch choice {
-						case "1":
-							//TODO: implement exchange rate data fetch
-						case "2":
-							//TODO: implement time series data pull
+						fmt.Print("Enter the quote currency: ")
+						quote, _ := reader.ReadString('\n')
+						quote = strings.ToUpper(strings.TrimSpace(quote))
+
+						if util.ForexVerification(base) && util.ForexVerification(quote) && (base != quote) {
+							fmt.Printf("\n1. (%s/%s) Exchange Rate\n", base, quote)
+							fmt.Printf("2. (%s/%s) Time Series Data\n", base, quote)
+							fmt.Println("3. Return To Pair Search")
+							choice, _ := reader.ReadString('\n')
+							choice = strings.TrimSpace(choice)
+							switch choice {
+							case "1":
+								//TODO: implement exchange rate data fetch
+								fmt.Println("")
+							case "2":
+								fmt.Print("Time interval?\n[1] = daily, [2] = weekly, [3] = monthly: ")
+								choice, _ := reader.ReadString('\n')
+								choice = strings.TrimSpace(choice)
+								switch choice {
+								case "1":
+									fmt.Printf("\nDaily prices for (%s/%s):\n", base, quote)
+									tsDataDaily, err := api.FetchForexTimeSeriesDaily(apiKey, base, quote)
+									if err != nil {
+										fmt.Printf("Unable to load daily time series data for (%s/%s)\n", quote, base)
+									} else {
+										util.PrintTimeSeriesData(tsDataDaily)
+									}
+								case "2":
+									fmt.Printf("\nWeekly prices for (%s/%s):\n", base, quote)
+									tsDataWeekly, err := api.FetchForexTimeSeriesWeekly(apiKey, base, quote)
+									if err != nil {
+										fmt.Printf("Unable to load weekly time series data for (%s/%s)\n", quote, base)
+									} else {
+										util.PrintTimeSeriesData(tsDataWeekly)
+									}
+								case "3":
+									fmt.Printf("\nMonthly prices for (%s/%s):\n", base, quote)
+									tsDataMonthly, err := api.FetchForexTimeSeriesMonthly(apiKey, base, quote)
+									if err != nil {
+										fmt.Printf("Unable to load monthly time series data for (%s/%s)\n", quote, base)
+									} else {
+										util.PrintTimeSeriesData(tsDataMonthly)
+									}
+								}
+							case "3":
+								continue forexSearch
+							}
+						} else if util.ForexVerification(base) && !util.ForexVerification(quote) {
+							fmt.Println("Quote Not Found")
+						} else if !util.ForexVerification(base) && util.ForexVerification(quote) {
+							fmt.Println("Base Not Found")
+						} else if base == quote {
+							fmt.Println("Please enter different values for the base and quote currencies")
+
+						} else {
+							continue forexMenu
 						}
-					} else if util.ForexVerification(base) && !util.ForexVerification(quote) {
-						fmt.Println("Quote Not Found")
-					} else if !util.ForexVerification(base) && util.ForexVerification(quote) {
-						fmt.Println("Base Not Found")
-					} else if base == quote {
-						fmt.Println("Please enter different values for the base and quote currencies")
-					} else {
-						continue currencySearch
-					}
 
-				case "2":
-					continue mainLoop
+					case "2":
+						continue mainLoop
+					}
 				}
 
 			}
