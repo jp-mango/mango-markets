@@ -1,15 +1,37 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type TimeSeriesData interface {
 	GetTimeSeriesData() map[string]map[string]string
+}
+
+func ParseFloat(value string) float64 {
+	price, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		log.Fatalf("Error parsing float value: %v", err)
+	}
+	return price
+}
+
+func ParseInt(value string) int64 {
+	volume, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		log.Fatalf("Error parsing int value: %v", err)
+	}
+	return volume
 }
 
 // ! Time series daily
@@ -28,6 +50,16 @@ type TimeSeriesDaily struct {
 	TimeSeries map[string]map[string]string `json:"Time Series (Daily)"`
 }
 
+type StockPrice struct {
+	Symbol    string  `bson:"symbol"`
+	Timestamp string  `bson:"timestamp"`
+	Open      float64 `bson:"open"`
+	High      float64 `bson:"high"`
+	Low       float64 `bson:"low"`
+	Close     float64 `bson:"close"`
+	Volume    int64   `bson:"volume"`
+}
+
 func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
@@ -42,6 +74,50 @@ func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
 		return TimeSeriesDaily{}, fmt.Errorf("error parsing API content:%e", err)
 	}
 	return tsdData, err
+}
+
+func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) error {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("unable to hit endpoint: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var tsdData TimeSeriesDaily
+	content, _ := io.ReadAll(resp.Body)
+	if err := json.Unmarshal(content, &tsdData); err != nil {
+		return fmt.Errorf("error parsing API content: %v", err)
+	}
+
+	for date, priceData := range tsdData.TimeSeries {
+		stockPrice := StockPrice{
+			Symbol:    ticker,
+			Timestamp: date,
+			Open:      ParseFloat(priceData["1. open"]),
+			High:      ParseFloat(priceData["2. high"]),
+			Low:       ParseFloat(priceData["3. low"]),
+			Close:     ParseFloat(priceData["4. close"]),
+			Volume:    ParseInt(priceData["5. volume"]),
+		}
+
+		_, err := collection.InsertOne(context.Background(), stockPrice)
+		if err != nil {
+			return fmt.Errorf("error inserting stock price data: %v", err)
+		}
+
+		_, err = collection.UpdateOne(
+			context.Background(),
+			bson.M{"symbol": stockPrice.Symbol, "timestamp": stockPrice.Timestamp},
+			bson.M{"$set": stockPrice},
+			options.Update().SetUpsert(true),
+		)
+		if err != nil {
+			return fmt.Errorf("error updating MongoDB document: %v", err)
+		}
+	}
+
+	return nil
 }
 
 // ! Time series weekly
@@ -70,9 +146,47 @@ func FetchTimeSeriesWeekly(apiKey, ticker string) (TimeSeriesWeekly, error) {
 	var tswData TimeSeriesWeekly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tswData); err != nil {
-		return TimeSeriesWeekly{}, fmt.Errorf("error parsing API content:%e", err)
+		return TimeSeriesWeekly{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 	return tswData, err
+}
+
+func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) error {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal("Unable to hit endpoint:", err)
+	}
+	defer resp.Body.Close()
+
+	var tswData TimeSeriesWeekly
+	content, _ := io.ReadAll(resp.Body)
+	if err := json.Unmarshal(content, &tswData); err != nil {
+		return fmt.Errorf("error parsing API content: %v", err)
+	}
+
+	for date, priceData := range tswData.TimeSeries {
+		stockPrice := StockPrice{
+			Symbol:    ticker,
+			Timestamp: date,
+			Open:      ParseFloat(priceData["1. open"]),
+			High:      ParseFloat(priceData["2. high"]),
+			Low:       ParseFloat(priceData["3. low"]),
+			Close:     ParseFloat(priceData["4. close"]),
+			Volume:    ParseInt(priceData["5. volume"]),
+		}
+
+		_, err := collection.InsertOne(context.Background(), stockPrice)
+		if err != nil {
+			return fmt.Errorf("error inserting stock price data: %v", err)
+		}
+		_, err = collection.InsertOne(context.Background(), stockPrice)
+		if err != nil {
+			return fmt.Errorf("error inserting stock price data: %v", err)
+		}
+	}
+
+	return nil
 }
 
 // ! Time series monthly
@@ -101,9 +215,48 @@ func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
 	var tsmData TimeSeriesMonthly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tsmData); err != nil {
-		return TimeSeriesMonthly{}, fmt.Errorf("error parsing API content:%e", err)
+		return TimeSeriesMonthly{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 	return tsmData, err
+}
+
+func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) error {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=%s", ticker, apiKey)
+	resp, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("unable to hit endpoint: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var tsmData TimeSeriesMonthly
+	content, _ := io.ReadAll(resp.Body)
+	if err := json.Unmarshal(content, &tsmData); err != nil {
+		return fmt.Errorf("error parsing API content: %v", err)
+	}
+
+	for date, priceData := range tsmData.TimeSeries {
+		stockPrice := StockPrice{
+			Symbol:    ticker,
+			Timestamp: date,
+			Open:      ParseFloat(priceData["1. open"]),
+			High:      ParseFloat(priceData["2. high"]),
+			Low:       ParseFloat(priceData["3. low"]),
+			Close:     ParseFloat(priceData["4. close"]),
+			Volume:    ParseInt(priceData["5. volume"]),
+		}
+
+		_, err := collection.UpdateOne(
+			context.Background(),
+			bson.M{"symbol": stockPrice.Symbol, "timestamp": stockPrice.Timestamp},
+			bson.M{"$set": stockPrice},
+			options.Update().SetUpsert(true),
+		)
+		if err != nil {
+			return fmt.Errorf("error updating MongoDB document: %v", err)
+		}
+	}
+
+	return nil
 }
 
 // ! Top Gainers and Losers

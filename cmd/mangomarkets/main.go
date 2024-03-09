@@ -2,18 +2,32 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/jp-mango/mangomarkets/internal/api"
 	"github.com/jp-mango/mangomarkets/internal/config"
+	"github.com/jp-mango/mangomarkets/internal/db"
 	"github.com/jp-mango/mangomarkets/util"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	apiKey := config.LoadEnv()
+
+	// Connect to MongoDB
+	client, err := db.ConnectMongoDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(context.Background())
+
+	// Select the database and collection
+	database := client.Database("mangomarkets")
 
 mainLoop:
 	for {
@@ -78,30 +92,42 @@ mainLoop:
 							interval, _ = reader.ReadString('\n')
 							interval = strings.TrimSpace(interval)
 
+							var collection *mongo.Collection
+							switch interval {
+							case "1": // daily prices
+								collection = database.Collection("daily_stock_price_data")
+							case "2": // weekly prices
+								collection = database.Collection("weekly_stock_price_data")
+							case "3": // monthly prices
+								collection = database.Collection("monthly_stock_price_data")
+							}
+
 							switch interval {
 							case "1": // daily prices
 								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
-								tsDataDaily, err := api.FetchTimeSeriesDaily(apiKey, ticker)
-								if err != nil {
+								data := api.SaveTimeSeriesDaily(apiKey, ticker, collection)
+								if data != nil {
 									fmt.Println("Unable to load daily time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataDaily, tsDataDaily.MetaData)
+									fmt.Printf("Inserting into collection: %s\n", collection.Name())
 								}
 							case "2": // weekly prices
+								collection := database.Collection("weekly_stock_price_data")
 								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
-								tsDataWeekly, err := api.FetchTimeSeriesWeekly(apiKey, ticker)
-								if err != nil {
+								data := api.SaveTimeSeriesWeekly(apiKey, ticker, collection)
+								if data != nil {
 									fmt.Println("Unable to load weekly time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataWeekly, tsDataWeekly.MetaData)
+									fmt.Printf("Inserting into collection: %s\n", collection.Name())
 								}
 							case "3": // monthly prices
+								collection := database.Collection("monthly_stock_price_data")
 								fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
-								tsDataMonthly, err := api.FetchTimeSeriesMonthly(apiKey, ticker)
-								if err != nil {
+								data := api.SaveTimeSeriesMonthly(apiKey, ticker, collection)
+								if data != nil {
 									fmt.Println("Unable to load monthly time series data for", ticker)
 								} else {
-									util.PrintTimeSeriesData(tsDataMonthly, tsDataMonthly.MetaData)
+									fmt.Printf("Inserting into collection: %s\n", collection.Name())
 								}
 							default:
 								fmt.Println("Invalid interval")
