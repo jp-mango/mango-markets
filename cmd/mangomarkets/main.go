@@ -103,6 +103,7 @@ mainLoop:
 							}
 
 							switch interval {
+
 							case "1": // daily prices
 								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
 								data := api.SaveTimeSeriesDaily(apiKey, ticker, collection)
