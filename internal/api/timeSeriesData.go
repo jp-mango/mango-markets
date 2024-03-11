@@ -51,13 +51,15 @@ type TimeSeriesDaily struct {
 }
 
 type StockPrice struct {
-	Symbol    string  `bson:"symbol"`
-	Timestamp string  `bson:"timestamp"`
-	Open      float64 `bson:"open"`
-	High      float64 `bson:"high"`
-	Low       float64 `bson:"low"`
-	Close     float64 `bson:"close"`
-	Volume    int64   `bson:"volume"`
+	Symbol         string  `bson:"symbol"`
+	Timestamp      string  `bson:"timestamp"`
+	Open           float64 `bson:"open"`
+	High           float64 `bson:"high"`
+	Low            float64 `bson:"low"`
+	Close          float64 `bson:"close"`
+	Volume         int64   `bson:"volume"`
+	AdjustedClose  float64 `bson:"adjusted close"`
+	DividendAmount float64 `bson:"dividend amount"`
 }
 
 func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
@@ -101,19 +103,15 @@ func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) er
 			Volume:    ParseInt(priceData["5. volume"]),
 		}
 
-		_, err := collection.InsertOne(context.Background(), stockPrice)
-		if err != nil {
-			return fmt.Errorf("error inserting stock price data: %v", err)
-		}
-
-		_, err = collection.UpdateOne(
+		// Using UpdateOne with upsert option to avoid duplicates
+		_, err := collection.UpdateOne(
 			context.Background(),
 			bson.M{"symbol": stockPrice.Symbol, "timestamp": stockPrice.Timestamp},
 			bson.M{"$set": stockPrice},
 			options.Update().SetUpsert(true),
 		)
 		if err != nil {
-			return fmt.Errorf("error updating MongoDB document: %v", err)
+			return fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 
@@ -152,7 +150,7 @@ func FetchTimeSeriesWeekly(apiKey, ticker string) (TimeSeriesWeekly, error) {
 }
 
 func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) error {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&apikey=%s", ticker, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal("Unable to hit endpoint:", err)
@@ -167,22 +165,26 @@ func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) e
 
 	for date, priceData := range tswData.TimeSeries {
 		stockPrice := StockPrice{
-			Symbol:    ticker,
-			Timestamp: date,
-			Open:      ParseFloat(priceData["1. open"]),
-			High:      ParseFloat(priceData["2. high"]),
-			Low:       ParseFloat(priceData["3. low"]),
-			Close:     ParseFloat(priceData["4. close"]),
-			Volume:    ParseInt(priceData["5. volume"]),
+			Symbol:         ticker,
+			Timestamp:      date,
+			Open:           ParseFloat(priceData["1. open"]),
+			High:           ParseFloat(priceData["2. high"]),
+			Low:            ParseFloat(priceData["3. low"]),
+			Close:          ParseFloat(priceData["4. close"]),
+			AdjustedClose:  ParseFloat(priceData["5. adjusted close"]),
+			Volume:         ParseInt(priceData["6. volume"]),
+			DividendAmount: ParseFloat(priceData["7. dividend amount"]),
 		}
 
-		_, err := collection.InsertOne(context.Background(), stockPrice)
+		// Using UpdateOne with upsert option to avoid duplicates
+		_, err := collection.UpdateOne(
+			context.Background(),
+			bson.M{"symbol": stockPrice.Symbol, "timestamp": stockPrice.Timestamp},
+			bson.M{"$set": stockPrice},
+			options.Update().SetUpsert(true),
+		)
 		if err != nil {
-			return fmt.Errorf("error inserting stock price data: %v", err)
-		}
-		_, err = collection.InsertOne(context.Background(), stockPrice)
-		if err != nil {
-			return fmt.Errorf("error inserting stock price data: %v", err)
+			return fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 
@@ -221,7 +223,7 @@ func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
 }
 
 func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) error {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=%s", ticker, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("unable to hit endpoint: %v", err)
@@ -236,13 +238,15 @@ func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) 
 
 	for date, priceData := range tsmData.TimeSeries {
 		stockPrice := StockPrice{
-			Symbol:    ticker,
-			Timestamp: date,
-			Open:      ParseFloat(priceData["1. open"]),
-			High:      ParseFloat(priceData["2. high"]),
-			Low:       ParseFloat(priceData["3. low"]),
-			Close:     ParseFloat(priceData["4. close"]),
-			Volume:    ParseInt(priceData["5. volume"]),
+			Symbol:         ticker,
+			Timestamp:      date,
+			Open:           ParseFloat(priceData["1. open"]),
+			High:           ParseFloat(priceData["2. high"]),
+			Low:            ParseFloat(priceData["3. low"]),
+			Close:          ParseFloat(priceData["4. close"]),
+			AdjustedClose:  ParseFloat(priceData["5. adjusted close"]),
+			Volume:         ParseInt(priceData["6. volume"]),
+			DividendAmount: ParseFloat(priceData["7. dividend amount"]),
 		}
 
 		_, err := collection.UpdateOne(
@@ -252,7 +256,7 @@ func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) 
 			options.Update().SetUpsert(true),
 		)
 		if err != nil {
-			return fmt.Errorf("error updating MongoDB document: %v", err)
+			return fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 

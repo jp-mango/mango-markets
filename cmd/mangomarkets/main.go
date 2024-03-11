@@ -12,7 +12,6 @@ import (
 	"github.com/jp-mango/mangomarkets/internal/config"
 	"github.com/jp-mango/mangomarkets/internal/db"
 	"github.com/jp-mango/mangomarkets/util"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func main() {
@@ -26,7 +25,7 @@ func main() {
 	}
 	defer client.Disconnect(context.Background())
 
-	// Select the database and collection
+	// Select the database
 	database := client.Database("mangomarkets")
 
 mainLoop:
@@ -92,43 +91,30 @@ mainLoop:
 							interval, _ = reader.ReadString('\n')
 							interval = strings.TrimSpace(interval)
 
-							var collection *mongo.Collection
 							switch interval {
-							case "1": // daily prices
-								collection = database.Collection("daily_stock_price_data")
-							case "2": // weekly prices
-								collection = database.Collection("weekly_stock_price_data")
-							case "3": // monthly prices
-								collection = database.Collection("monthly_stock_price_data")
-							}
-
-							switch interval {
-
 							case "1": // daily prices
 								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
-								data := api.SaveTimeSeriesDaily(apiKey, ticker, collection)
-								if data != nil {
-									fmt.Println("Unable to load daily time series data for", ticker)
+								dailyData := api.SaveTimeSeriesDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
+								if dailyData != nil {
+									fmt.Printf("Unable to save daily time series data for %s: %v\n", ticker, dailyData)
 								} else {
-									fmt.Printf("Inserting into collection: %s\n", collection.Name())
+									fmt.Println("Daily prices saved to the database.")
 								}
 							case "2": // weekly prices
-								collection := database.Collection("weekly_stock_price_data")
 								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
-								data := api.SaveTimeSeriesWeekly(apiKey, ticker, collection)
-								if data != nil {
-									fmt.Println("Unable to load weekly time series data for", ticker)
+								weeklyData := api.SaveTimeSeriesWeekly(apiKey, ticker, database.Collection("weekly_stock_price_data"))
+								if weeklyData != nil {
+									fmt.Printf("Unable to save weekly time series data for %s: %v\n", ticker, weeklyData)
 								} else {
-									fmt.Printf("Inserting into collection: %s\n", collection.Name())
+									fmt.Println("Weekly prices saved to the database.")
 								}
 							case "3": // monthly prices
-								collection := database.Collection("monthly_stock_price_data")
 								fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
-								data := api.SaveTimeSeriesMonthly(apiKey, ticker, collection)
-								if data != nil {
-									fmt.Println("Unable to load monthly time series data for", ticker)
+								monthlyData := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("monthly_stock_price_data"))
+								if monthlyData != nil {
+									fmt.Printf("Unable to save weekly time series data for %s: %v\n", ticker, monthlyData)
 								} else {
-									fmt.Printf("Inserting into collection: %s\n", collection.Name())
+									fmt.Println("Weekly prices saved to the database.")
 								}
 							default:
 								fmt.Println("Invalid interval")
