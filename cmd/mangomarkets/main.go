@@ -93,14 +93,21 @@ mainLoop:
 
 							switch interval {
 							case "1": // daily prices
-								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
+								/*
+									results, err := api.FetchSavedData(client, "daily_stock_price_data", ticker)
+									if err != nil || len(results) == 0 {
+										fmt.Println("Unable to retrieve daily stock info for", ticker)
+									} else {
+										fmt.Print(results)
+									}
+								*/
 								dailyData, err := api.SaveTimeSeriesDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
 								if err != nil {
 									fmt.Printf("Unable to save daily time series data for %s: %v\n", ticker, dailyData)
 								} else {
-									util.PrintTimeSeriesData(dailyData, dailyData.MetaData)
-									fmt.Println("Daily prices saved to the database.")
+									fmt.Printf("%s daily prices saved to the database.\n", strings.ToUpper(ticker))
 								}
+
 							case "2": // weekly prices
 								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
 								weeklyData, err := api.SaveTimeSeriesWeekly(apiKey, ticker, database.Collection("weekly_stock_price_data"))

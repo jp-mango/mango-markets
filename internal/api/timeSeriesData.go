@@ -34,6 +34,41 @@ func ParseInt(value string) int64 {
 	return volume
 }
 
+func FetchSavedData(client *mongo.Client, collectionName, symbol string) ([]StockPrice, error) {
+	var results []StockPrice
+
+	collection := client.Database("mangomarkets").Collection(collectionName)
+
+	// Building a query filter
+	filter := bson.M{"symbol": symbol}
+
+	// Finding documents
+	findOptions := options.Find()
+	cur, err := collection.Find(context.Background(), filter, findOptions)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer cur.Close(context.Background())
+
+	// Iterating through the cursor
+	for cur.Next(context.Background()) {
+		var elem StockPrice
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+		results = append(results, elem)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	return results, nil
+}
+
 // ! Time series daily
 func (tsd TimeSeriesDaily) GetTimeSeriesData() map[string]map[string]string {
 	return tsd.TimeSeries
@@ -60,22 +95,6 @@ type StockPrice struct {
 	Volume         int64   `bson:"volume"`
 	AdjustedClose  float64 `bson:"adjusted close"`
 	DividendAmount float64 `bson:"dividend amount"`
-}
-
-func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatal("Unable to hit endpoint:", err)
-	}
-	defer resp.Body.Close()
-
-	var tsdData TimeSeriesDaily
-	content, _ := io.ReadAll(resp.Body)
-	if err := json.Unmarshal(content, &tsdData); err != nil {
-		return TimeSeriesDaily{}, fmt.Errorf("error parsing API content:%e", err)
-	}
-	return tsdData, err
 }
 
 func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesDaily, error) {
@@ -133,22 +152,6 @@ type TimeSeriesWeekly struct {
 	TimeSeries map[string]map[string]string `json:"Weekly Adjusted Time Series"`
 }
 
-func FetchTimeSeriesWeekly(apiKey, ticker string) (TimeSeriesWeekly, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatal("Unable to hit endpoint:", err)
-	}
-	defer resp.Body.Close()
-
-	var tswData TimeSeriesWeekly
-	content, _ := io.ReadAll(resp.Body)
-	if err := json.Unmarshal(content, &tswData); err != nil {
-		return TimeSeriesWeekly{}, fmt.Errorf("error parsing API content: %v", err)
-	}
-	return tswData, err
-}
-
 func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesWeekly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
@@ -204,22 +207,6 @@ type TimeSeriesMonthly struct {
 		TimeZone      string `json:"5. Time Zone"`
 	} `json:"Meta Data"`
 	TimeSeries map[string]map[string]string `json:"Monthly Adjusted Time Series"`
-}
-
-func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatal("Unable to hit endpoint:", err)
-	}
-	defer resp.Body.Close()
-
-	var tsmData TimeSeriesMonthly
-	content, _ := io.ReadAll(resp.Body)
-	if err := json.Unmarshal(content, &tsmData); err != nil {
-		return TimeSeriesMonthly{}, fmt.Errorf("error parsing API content: %v", err)
-	}
-	return tsmData, err
 }
 
 func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesMonthly, error) {
