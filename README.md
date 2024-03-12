@@ -39,10 +39,10 @@ The application operates in a loop, prompting the user to navigate through the m
 
 ## Getting Started
 
-To run Mango Markets, ensure you have Go installed and set up on your machine. Clone the repository, navigate to the application directory, and run:
+To run Mango Markets, ensure you have `Go`, `Docker`, and `Make` installed and set up on your machine. Clone the repository, navigate to the application directory, and run:
 
 ```bash
-go run main.go
+make all
 ```
 
 Alternatively there is an exe located in bin
