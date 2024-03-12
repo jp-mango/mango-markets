@@ -78,18 +78,18 @@ func FetchTimeSeriesDaily(apiKey, ticker string) (TimeSeriesDaily, error) {
 	return tsdData, err
 }
 
-func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) error {
+func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesDaily, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
-		return fmt.Errorf("unable to hit endpoint: %v", err)
+		return TimeSeriesDaily{}, fmt.Errorf("unable to hit endpoint: %v", err)
 	}
 	defer resp.Body.Close()
 
 	var tsdData TimeSeriesDaily
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tsdData); err != nil {
-		return fmt.Errorf("error parsing API content: %v", err)
+		return TimeSeriesDaily{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 
 	for date, priceData := range tsdData.TimeSeries {
@@ -111,11 +111,11 @@ func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) er
 			options.Update().SetUpsert(true),
 		)
 		if err != nil {
-			return fmt.Errorf("error upserting MongoDB document: %v", err)
+			return TimeSeriesDaily{}, fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 
-	return nil
+	return TimeSeriesDaily{}, nil
 }
 
 // ! Time series weekly
@@ -149,7 +149,7 @@ func FetchTimeSeriesWeekly(apiKey, ticker string) (TimeSeriesWeekly, error) {
 	return tswData, err
 }
 
-func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) error {
+func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesWeekly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -160,7 +160,7 @@ func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) e
 	var tswData TimeSeriesWeekly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tswData); err != nil {
-		return fmt.Errorf("error parsing API content: %v", err)
+		return TimeSeriesWeekly{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 
 	for date, priceData := range tswData.TimeSeries {
@@ -184,11 +184,11 @@ func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) e
 			options.Update().SetUpsert(true),
 		)
 		if err != nil {
-			return fmt.Errorf("error upserting MongoDB document: %v", err)
+			return TimeSeriesWeekly{}, fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 
-	return nil
+	return TimeSeriesWeekly{}, nil
 }
 
 // ! Time series monthly
@@ -222,18 +222,18 @@ func FetchTimeSeriesMonthly(apiKey, ticker string) (TimeSeriesMonthly, error) {
 	return tsmData, err
 }
 
-func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) error {
+func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesMonthly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
-		return fmt.Errorf("unable to hit endpoint: %v", err)
+		return TimeSeriesMonthly{}, fmt.Errorf("unable to hit endpoint: %v", err)
 	}
 	defer resp.Body.Close()
 
 	var tsmData TimeSeriesMonthly
 	content, _ := io.ReadAll(resp.Body)
 	if err := json.Unmarshal(content, &tsmData); err != nil {
-		return fmt.Errorf("error parsing API content: %v", err)
+		return TimeSeriesMonthly{}, fmt.Errorf("error parsing API content: %v", err)
 	}
 
 	for date, priceData := range tsmData.TimeSeries {
@@ -256,11 +256,11 @@ func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) 
 			options.Update().SetUpsert(true),
 		)
 		if err != nil {
-			return fmt.Errorf("error upserting MongoDB document: %v", err)
+			return TimeSeriesMonthly{}, fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
 
-	return nil
+	return TimeSeriesMonthly{}, nil
 }
 
 // ! Top Gainers and Losers
