@@ -94,26 +94,29 @@ mainLoop:
 							switch interval {
 							case "1": // daily prices
 								fmt.Printf("\nDaily prices for %v:\n\n", strings.ToUpper(ticker))
-								dailyData := api.SaveTimeSeriesDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
-								if dailyData != nil {
+								dailyData, err := api.SaveTimeSeriesDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
+								if err != nil {
 									fmt.Printf("Unable to save daily time series data for %s: %v\n", ticker, dailyData)
 								} else {
+									util.PrintTimeSeriesData(dailyData, dailyData.MetaData)
 									fmt.Println("Daily prices saved to the database.")
 								}
 							case "2": // weekly prices
 								fmt.Printf("\nWeekly prices for %v:\n\n", strings.ToUpper(ticker))
-								weeklyData := api.SaveTimeSeriesWeekly(apiKey, ticker, database.Collection("weekly_stock_price_data"))
-								if weeklyData != nil {
+								weeklyData, err := api.SaveTimeSeriesWeekly(apiKey, ticker, database.Collection("weekly_stock_price_data"))
+								if err != nil {
 									fmt.Printf("Unable to save weekly time series data for %s: %v\n", ticker, weeklyData)
 								} else {
+									util.PrintTimeSeriesData(weeklyData, weeklyData.MetaData)
 									fmt.Println("Weekly prices saved to the database.")
 								}
 							case "3": // monthly prices
 								fmt.Printf("\nMonthly prices for %v:\n\n", strings.ToUpper(ticker))
-								monthlyData := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("monthly_stock_price_data"))
-								if monthlyData != nil {
+								monthlyData, err := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("monthly_stock_price_data"))
+								if err != nil {
 									fmt.Printf("Unable to save weekly time series data for %s: %v\n", ticker, monthlyData)
 								} else {
+									util.PrintTimeSeriesData(monthlyData, monthlyData.MetaData)
 									fmt.Println("Weekly prices saved to the database.")
 								}
 							default:
