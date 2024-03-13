@@ -9,6 +9,7 @@ import (
 )
 
 // ! Time series Data
+// TODO: revise printing of time series data function
 func PrintTimeSeriesData(provider api.TimeSeriesData, metadata interface{}) {
 	tsData := provider.GetTimeSeriesData()
 
