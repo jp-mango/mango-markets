@@ -6,7 +6,7 @@ Mango Markets is a comprehensive financial application aimed at providing users 
 
 ### 1. Stock Market
 
-- **Top Gainers and Losers**: Retrieves the day's top gainers and losers in the stock market, providing a quick snapshot of market movements.
+- **Top Gainers and Losers**: Retrieves the day's top gainers and losers in the stock market, providing a snapshot of market movements.
 - **Ticker Search**: Allows users to input a stock ticker and choose from a range of data to display, including stock price, company overview, financial statements, and more.
 - **Global Market Status**: Shows the open and close times of major global stock exchanges, along with their current status (open or closed).
 
