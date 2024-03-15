@@ -97,7 +97,7 @@ type StockPrice struct {
 	DividendAmount float64 `bson:"dividend amount"`
 }
 
-func SaveTimeSeriesDaily(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesDaily, error) {
+func SaveStockDataDaily(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesDaily, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -152,7 +152,7 @@ type TimeSeriesWeekly struct {
 	TimeSeries map[string]map[string]string `json:"Weekly Adjusted Time Series"`
 }
 
-func SaveTimeSeriesWeekly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesWeekly, error) {
+func SaveStockDataWeekly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesWeekly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -209,7 +209,7 @@ type TimeSeriesMonthly struct {
 	TimeSeries map[string]map[string]string `json:"Monthly Adjusted Time Series"`
 }
 
-func SaveTimeSeriesMonthly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesMonthly, error) {
+func SaveStockDataMonthly(apiKey, ticker string, collection *mongo.Collection) (TimeSeriesMonthly, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=%s&apikey=%s", ticker, apiKey)
 	resp, err := http.Get(url)
 	if err != nil {

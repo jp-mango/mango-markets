@@ -129,3 +129,6 @@ func FetchExchangeRate(apiKey, fromCurrency, toCurrency string) (ExchangeRate, e
 	}
 	return data.ExchangeRate, nil
 }
+
+//! Daily Crypto
+//TODO: implement ticker pull

@@ -93,9 +93,10 @@ mainLoop:
 
 							switch interval {
 							case "1": // daily prices
+								//TODO: check if most recent data is in table, then pull
 								results, err := api.FetchSavedData(client, "daily_stock_price_data", ticker)
 								if err != nil || len(results) == 0 {
-									dailyData, err := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("daily_stock_price_data"))
+									dailyData, err := api.SaveStockDataDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
 									if err != nil {
 										fmt.Printf("Unable to save daily time series data for %s: %v\n", ticker, dailyData)
 									} else {
@@ -106,9 +107,10 @@ mainLoop:
 								}
 
 							case "2": // weekly prices
+								//TODO: check if most recent data is in table, then pull
 								results, err := api.FetchSavedData(client, "weekly_stock_price_data", ticker)
 								if err != nil || len(results) == 0 {
-									weeklyData, err := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("weekly_stock_price_data"))
+									weeklyData, err := api.SaveStockDataWeekly(apiKey, ticker, database.Collection("weekly_stock_price_data"))
 									if err != nil {
 										fmt.Printf("Unable to save weekly time series data for %s: %v\n", ticker, weeklyData)
 									} else {
@@ -118,9 +120,10 @@ mainLoop:
 									fmt.Println(results)
 								}
 							case "3": // monthly prices
+								//TODO: check if most recent data is in table, then pull
 								results, err := api.FetchSavedData(client, "monthly_stock_price_data", ticker)
 								if err != nil || len(results) == 0 {
-									monthlyData, err := api.SaveTimeSeriesMonthly(apiKey, ticker, database.Collection("monthly_stock_price_data"))
+									monthlyData, err := api.SaveStockDataMonthly(apiKey, ticker, database.Collection("monthly_stock_price_data"))
 									if err != nil {
 										fmt.Printf("Unable to save monthly time series data for %s: %v\n", ticker, monthlyData)
 									} else {
