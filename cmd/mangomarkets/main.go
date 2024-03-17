@@ -93,7 +93,7 @@ mainLoop:
 
 							switch interval {
 							case "1": // daily prices
-								//TODO: check if most recent data is in table, then pull from api
+								//TODO: check if most recent data is in table (current day, week, month), then pull from api
 								results, err := api.FetchSavedData(client, "daily_stock_price_data", ticker)
 								if err != nil || len(results) == 0 {
 									dailyData, err := api.SaveStockDataDaily(apiKey, ticker, database.Collection("daily_stock_price_data"))
