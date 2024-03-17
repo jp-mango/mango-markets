@@ -246,7 +246,6 @@ func SaveStockDataMonthly(apiKey, ticker string, collection *mongo.Collection) (
 			return TimeSeriesMonthly{}, fmt.Errorf("error upserting MongoDB document: %v", err)
 		}
 	}
-
 	return TimeSeriesMonthly{}, nil
 }
 
