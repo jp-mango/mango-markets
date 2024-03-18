@@ -1,7 +1,9 @@
 package util
 
 import (
+	"encoding/csv"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 
@@ -516,4 +518,28 @@ topicConstruct:
 	userTopics := strings.Join(topicString, ",")
 	topicUrl := fmt.Sprintf("https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=%s&apikey=%s", userTopics, apiKey)
 	return topicUrl
+}
+
+// ! user entry validation
+func CheckTickerStatus(ticker string) (bool, error) {
+	file, err := os.Open("../../reference/listing_status.csv")
+
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+
+	if err != nil {
+		return false, err
+	}
+
+	for _, r := range records {
+		if ticker == r[0] {
+			return true, nil
+		}
+	}
+	return false, err
 }

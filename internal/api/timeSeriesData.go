@@ -65,7 +65,6 @@ func FetchSavedData(client *mongo.Client, collectionName, symbol string) ([]Stoc
 		log.Fatal(err)
 		return nil, err
 	}
-
 	return results, nil
 }
 

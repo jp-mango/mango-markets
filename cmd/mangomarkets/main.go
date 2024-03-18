@@ -66,10 +66,20 @@ mainLoop:
 
 				case "2":
 					var ticker string
-					fmt.Print("\nEnter ticker: ")
-					ticker, _ = reader.ReadString('\n')
-					ticker = strings.ToUpper(strings.TrimSpace(ticker))
-
+				tickerEntry:
+					for {
+						fmt.Print("\nEnter ticker: ")
+						ticker, _ = reader.ReadString('\n')
+						ticker = strings.ToUpper(strings.TrimSpace(ticker))
+						status, err := util.CheckTickerStatus(ticker)
+						if err != nil {
+							fmt.Print("error validating entry", err)
+						} else if !status {
+							continue tickerEntry
+						} else {
+							break
+						}
+					}
 				tickerSearch:
 					for {
 						fmt.Printf("\nWhat data would you like to see for %s?\n", ticker)

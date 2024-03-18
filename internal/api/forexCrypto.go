@@ -130,5 +130,38 @@ func FetchExchangeRate(apiKey, fromCurrency, toCurrency string) (ExchangeRate, e
 	return data.ExchangeRate, nil
 }
 
-//! Daily Crypto
-//TODO: implement ticker pull
+// ! Daily Crypto
+type CryptoTimeSeriesDaily struct {
+	MetaData struct {
+		Information   string `json:"1. Information"`
+		Ticker        string `json:"2. Digital Currency Code"`
+		Name          string `json:"3. Digital Currency Name"`
+		MarketCode    string `json:"4. Market Code"`
+		MarketName    string `json:"5. Market Name"`
+		LastRefreshed string `json:"6. Last Refreshed"`
+		TimeZone      string `json:"7. Time Zone"`
+	}
+	TimeSeries map[string]map[string]string `json:"Time Series (Digital Currency Daily)"`
+}
+
+type CryptoTSData struct {
+}
+
+//func FetchDailyCryptoPrices(apiKey, ticker string) (TimeSeriesDaily, error) {
+//	url := fmt.Sprint("https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=%s&market=USD&apikey=%s", ticker, apiKey)
+//	resp, err := http.Get(url)
+//	if err != nil {
+//		log.Fatal("Unable to hit endpoint:", err)
+//	}
+//	defer resp.Body.Close()
+//
+//	var tsdData TimeSeriesDaily
+//	content, _ := io.ReadAll(resp.Body)
+//	if err := json.Unmarshal(content, &tsdData); err != nil {
+//		return TimeSeriesDaily{}, fmt.Errorf("error parsing API content: %v", err)
+//	}
+//
+//	for date, priceData := range tsdData.TimeSeries{
+//
+//	}
+//}
