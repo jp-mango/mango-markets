@@ -1,7 +1,6 @@
 package internal
 
 // Intraday Data
-
 type Metadata struct {
 	Information   string `json:"1. Information"`
 	Symbol        string `json:"2. Symbol"`
