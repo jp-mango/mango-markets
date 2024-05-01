@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 type TopGainLoss struct {
@@ -26,22 +24,17 @@ type Tickers struct {
 func FetchTopGainLossData(apiKey string) (*TopGainLoss, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=%s", apiKey)
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch top gainers and losers: %v", err)
-	}
-	defer resp.Body.Close()
+	var topGainLoss TopGainLoss
 
-	body, err := io.ReadAll(resp.Body)
+	gainLoss, err := DataPull(url)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+		fmt.Errorf("error:", err)
 	}
 
-	var gainLoss TopGainLoss
-	err = json.Unmarshal(body, &gainLoss)
+	err = json.Unmarshal(gainLoss, &topGainLoss)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON request: %v", err)
 	}
 
-	return &gainLoss, nil
+	return &topGainLoss, nil
 }

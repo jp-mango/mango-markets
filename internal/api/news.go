@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 type NewsSentimentData struct {
@@ -44,25 +42,17 @@ func FetchNewsSentimentData(apiKey string, ticker string) (*NewsSentimentData, e
 	// Construct the API URL
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=%s&apikey=%s", ticker, apiKey)
 
-	// Make the HTTP GET request
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch news sentiment data: %v", err)
-	}
-	defer resp.Body.Close()
+	var news NewsSentimentData
 
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
+	newsData, err := DataPull(url)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+		fmt.Errorf("error:", err)
 	}
 
-	// Parse the JSON response
-	var data NewsSentimentData
-	err = json.Unmarshal(body, &data)
+	err = json.Unmarshal(newsData, &news)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON response: %v", err)
 	}
 
-	return &data, nil
+	return &news, nil
 }

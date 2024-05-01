@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -32,20 +33,76 @@ func IntradayDataPull(apiKey, ticker, interval string) (*TimeSeriesData, error) 
 	*	- Interval (1m,5m,15m,30m,60m)
 	 */
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=%s&entitlement=delayed&apikey=%s", ticker, interval, apiKey)
-	return dataPull(url)
+
+	var data TimeSeriesData
+
+	content, err := DataPull(url)
+	if err != nil {
+		return nil, fmt.Errorf("error: %s", err)
+
+	}
+
+	err = json.Unmarshal(content, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
+	}
+
+	return &data, nil
 }
 
 func DailyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
-	return dataPull(url)
+
+	var data TimeSeriesData
+
+	content, err := DataPull(url)
+	if err != nil {
+		return nil, fmt.Errorf("error: %s", err)
+
+	}
+
+	err = json.Unmarshal(content, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
+	}
+
+	return &data, nil
 }
 
 func WeeklyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&apikey=%s", ticker, apiKey)
-	return dataPull(url)
+
+	var data TimeSeriesData
+
+	content, err := DataPull(url)
+	if err != nil {
+		return nil, fmt.Errorf("error: %s", err)
+
+	}
+
+	err = json.Unmarshal(content, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
+	}
+
+	return &data, nil
 }
 
 func MonthlyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=%s", ticker, apiKey)
-	return dataPull(url)
+
+	var data TimeSeriesData
+
+	content, err := DataPull(url)
+	if err != nil {
+		return nil, fmt.Errorf("error: %s", err)
+
+	}
+
+	err = json.Unmarshal(content, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
+	}
+
+	return &data, nil
 }
