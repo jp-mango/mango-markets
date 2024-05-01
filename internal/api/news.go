@@ -46,7 +46,7 @@ func FetchNewsSentimentData(apiKey string, ticker string) (*NewsSentimentData, e
 
 	newsData, err := DataPull(url)
 	if err != nil {
-		fmt.Errorf("error:", err)
+		return nil, fmt.Errorf("error: %s", err)
 	}
 
 	err = json.Unmarshal(newsData, &news)

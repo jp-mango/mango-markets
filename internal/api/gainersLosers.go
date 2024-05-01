@@ -28,7 +28,7 @@ func FetchTopGainLossData(apiKey string) (*TopGainLoss, error) {
 
 	gainLoss, err := DataPull(url)
 	if err != nil {
-		fmt.Errorf("error:", err)
+		return nil, fmt.Errorf("error: %v", err)
 	}
 
 	err = json.Unmarshal(gainLoss, &topGainLoss)
