@@ -77,3 +77,85 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 
 	return &companyInfo, nil
 }
+
+type CompanyFinancials struct {
+	Symbol           string            `json:"symbol"`
+	AnnualReports    []AnnualReport    `json:"annualReports"`
+	QuarterlyReports []QuarterlyReport `json:"quarterlyReports"`
+}
+
+type AnnualReport struct {
+	FiscalDateEnding                  string `json:"fiscalDateEnding"`
+	ReportedCurrency                  string `json:"reportedCurrency"`
+	GrossProfit                       string `json:"grossProfit"`
+	TotalRevenue                      string `json:"totalRevenue"`
+	CostOfRevenue                     string `json:"costOfRevenue"`
+	CostofGoodsAndServicesSold        string `json:"costofGoodsAndServicesSold"`
+	OperatingIncome                   string `json:"operatingIncome"`
+	SellingGeneralAndAdministrative   string `json:"sellingGeneralAndAdministrative"`
+	ResearchAndDevelopment            string `json:"researchAndDevelopment"`
+	OperatingExpenses                 string `json:"operatingExpenses"`
+	InvestmentIncomeNet               string `json:"investmentIncomeNet"`
+	NetInterestIncome                 string `json:"netInterestIncome"`
+	InterestIncome                    string `json:"interestIncome"`
+	InterestExpense                   string `json:"interestExpense"`
+	NonInterestIncome                 string `json:"nonInterestIncome"`
+	OtherNonOperatingIncome           string `json:"otherNonOperatingIncome"`
+	Depreciation                      string `json:"depreciation"`
+	DepreciationAndAmortization       string `json:"depreciationAndAmortization"`
+	IncomeBeforeTax                   string `json:"incomeBeforeTax"`
+	IncomeTaxExpense                  string `json:"incomeTaxExpense"`
+	InterestAndDebtExpense            string `json:"interestAndDebtExpense"`
+	NetIncomeFromContinuingOperations string `json:"netIncomeFromContinuingOperations"`
+	ComprehensiveIncomeNetOfTax       string `json:"comprehensiveIncomeNetOfTax"`
+	Ebit                              string `json:"ebit"`
+	Ebitda                            string `json:"ebitda"`
+	NetIncome                         string `json:"netIncome"`
+}
+
+type QuarterlyReport struct {
+	FiscalDateEnding                  string `json:"fiscalDateEnding"`
+	ReportedCurrency                  string `json:"reportedCurrency"`
+	GrossProfit                       string `json:"grossProfit"`
+	TotalRevenue                      string `json:"totalRevenue"`
+	CostOfRevenue                     string `json:"costOfRevenue"`
+	CostofGoodsAndServicesSold        string `json:"costofGoodsAndServicesSold"`
+	OperatingIncome                   string `json:"operatingIncome"`
+	SellingGeneralAndAdministrative   string `json:"sellingGeneralAndAdministrative"`
+	ResearchAndDevelopment            string `json:"researchAndDevelopment"`
+	OperatingExpenses                 string `json:"operatingExpenses"`
+	InvestmentIncomeNet               string `json:"investmentIncomeNet"`
+	NetInterestIncome                 string `json:"netInterestIncome"`
+	InterestIncome                    string `json:"interestIncome"`
+	InterestExpense                   string `json:"interestExpense"`
+	NonInterestIncome                 string `json:"nonInterestIncome"`
+	OtherNonOperatingIncome           string `json:"otherNonOperatingIncome"`
+	Depreciation                      string `json:"depreciation"`
+	DepreciationAndAmortization       string `json:"depreciationAndAmortization"`
+	IncomeBeforeTax                   string `json:"incomeBeforeTax"`
+	IncomeTaxExpense                  string `json:"incomeTaxExpense"`
+	InterestAndDebtExpense            string `json:"interestAndDebtExpense"`
+	NetIncomeFromContinuingOperations string `json:"netIncomeFromContinuingOperations"`
+	ComprehensiveIncomeNetOfTax       string `json:"comprehensiveIncomeNetOfTax"`
+	Ebit                              string `json:"ebit"`
+	Ebitda                            string `json:"ebitda"`
+	NetIncome                         string `json:"netIncome"`
+}
+
+func FetchIncomeStatement(ticker, apiKey string) (*CompanyFinancials, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=%s&apikey=%s", ticker, apiKey)
+
+	var incomeStatement CompanyFinancials
+
+	data, err := DataPull(url)
+	if err != nil {
+		return nil, fmt.Errorf("err: %s", err)
+	}
+
+	err = json.Unmarshal(data, &incomeStatement)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
+	}
+
+	return &incomeStatement, nil
+}
