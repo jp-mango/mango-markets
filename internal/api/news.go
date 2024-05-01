@@ -42,12 +42,7 @@ type Ticker struct {
 
 func FetchNewsSentimentData(apiKey string, ticker string) (*NewsSentimentData, error) {
 	// Construct the API URL
-	url := "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=" + apiKey
-
-	// Add ticker to the URL if provided
-	if ticker != "" {
-		url += "&tickers=" + ticker
-	}
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=%s&apikey=%s", ticker, apiKey)
 
 	// Make the HTTP GET request
 	resp, err := http.Get(url)
