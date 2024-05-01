@@ -46,7 +46,7 @@ func (t *TimeSeriesData) UnmarshalJSON(data []byte) error {
 }
 
 // ! Pull the data from the api
-func dataPull(url string) (*TimeSeriesData, error) {
+func DataPull(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("no info returned from url: %s", err)
@@ -58,12 +58,5 @@ func dataPull(url string) (*TimeSeriesData, error) {
 		return nil, fmt.Errorf("error reading response: %s", err)
 	}
 
-	var data TimeSeriesData
-
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
-	}
-
-	return &data, nil
+	return content, nil
 }
