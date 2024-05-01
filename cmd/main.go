@@ -36,5 +36,8 @@ func main() {
 	fmt.Println(weeklyStockInfo.TimeSeries)
 	fmt.Print("\n\n\n\n\n\n\n")
 	fmt.Println(monthlyStockInfo.TimeSeries)
+	fmt.Print("\n\n\n\n\n\n\n")
 
+	news, err := api.FetchNewsSentimentData(apiKey, "NVDA")
+	fmt.Println(news.Feed)
 }
