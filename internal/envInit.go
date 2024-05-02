@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadEnv() (API_KEY string, err error) {
+func LoadEnv() (API_KEY, DB_CONN string, err error) {
 	err = godotenv.Load()
 	//* (UNCOMMENT FOR DEBUGGING) //err = godotenv.Load("../.env")
 	if err != nil {
@@ -15,6 +15,7 @@ func LoadEnv() (API_KEY string, err error) {
 	}
 
 	API_KEY = os.Getenv("API_KEY")
+	DB_CONN = os.Getenv("DB_DSN")
 
-	return API_KEY, err
+	return API_KEY, DB_CONN, err
 }
