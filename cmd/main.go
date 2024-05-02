@@ -1,7 +1,12 @@
 package main
 
+import (
+	"fmt"
+	"mangomarkets/internal"
+)
+
 func main() {
-	//apiKey, _ := internal.LoadEnv()
+	apiKey, _ := internal.LoadEnv()
 	/*
 				intradayStockInfo, err := api.IntradayDataPull(apiKey, "AAPL", "5min")
 				if err != nil {
@@ -61,5 +66,12 @@ func main() {
 		for _, x := range incomeStatement.AnnualReports {
 			fmt.Println(x.CostOfRevenue)
 		}
+	
+	income,_ := api.FetchIncomeStatement("AAPL",apiKey)
+
+	for _, a := range income.QuarterlyIncomeStatement{
+		fmt.Printf("%s: %s\n",a.FiscalDateEnding,a.GrossProfit)
+	}
 	*/
+	fmt.Println(apiKey)
 }
