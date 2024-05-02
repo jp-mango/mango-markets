@@ -39,7 +39,7 @@ type Ticker struct {
 }
 
 /*
-! Market News
+! Market News:
 This API returns live and historical market news & sentiment data from a large & growing selection of premier news outlets around the world, covering stocks, cryptocurrencies, forex, and a wide range of topics such as fiscal policy, mergers & acquisitions, IPOs, etc.
 */
 func FetchNewsSentimentData(apiKey string, ticker string) (*NewsSentimentData, error) {
