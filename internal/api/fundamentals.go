@@ -78,13 +78,13 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 	return &companyInfo, nil
 }
 
-type CompanyFinancials struct {
+type IncomeStatement struct {
 	Symbol           string            `json:"symbol"`
-	AnnualReports    []AnnualReport    `json:"annualReports"`
-	QuarterlyReports []QuarterlyReport `json:"quarterlyReports"`
+	AnnualIncomeStatement    []AnnualIncomeStatement    `json:"annualReports"`
+	QuarterlyIncomeStatement []QuarterlyIncomeStatement `json:"quarterlyReports"`
 }
 
-type AnnualReport struct {
+type AnnualIncomeStatement struct {
 	FiscalDateEnding                  string `json:"fiscalDateEnding"`
 	ReportedCurrency                  string `json:"reportedCurrency"`
 	GrossProfit                       string `json:"grossProfit"`
@@ -113,7 +113,7 @@ type AnnualReport struct {
 	NetIncome                         string `json:"netIncome"`
 }
 
-type QuarterlyReport struct {
+type QuarterlyIncomeStatement struct {
 	FiscalDateEnding                  string `json:"fiscalDateEnding"`
 	ReportedCurrency                  string `json:"reportedCurrency"`
 	GrossProfit                       string `json:"grossProfit"`
@@ -142,10 +142,10 @@ type QuarterlyReport struct {
 	NetIncome                         string `json:"netIncome"`
 }
 
-func FetchIncomeStatement(ticker, apiKey string) (*CompanyFinancials, error) {
+func FetchIncomeStatement(ticker, apiKey string) (*IncomeStatement, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=%s&apikey=%s", ticker, apiKey)
 
-	var incomeStatement CompanyFinancials
+	var incomeStatement IncomeStatement
 
 	data, err := DataPull(url)
 	if err != nil {
@@ -159,3 +159,109 @@ func FetchIncomeStatement(ticker, apiKey string) (*CompanyFinancials, error) {
 
 	return &incomeStatement, nil
 }
+
+type BalanceSheet struct {
+    Symbol         string            `json:"symbol"`
+    AnnualBalanceSheet  []AnnualBalanceSheet    `json:"annualReports"`
+    QuarterlyBalanceSheet []QuarterlyBalanceSheet `json:"quarterlyReports"`
+}
+
+type AnnualBalanceSheet struct {
+    FiscalDateEnding                          string `json:"fiscalDateEnding"`
+    ReportedCurrency                          string `json:"reportedCurrency"`
+    TotalAssets                               string `json:"totalAssets"`
+    TotalCurrentAssets                        string `json:"totalCurrentAssets"`
+    CashAndCashEquivalentsAtCarryingValue     string `json:"cashAndCashEquivalentsAtCarryingValue"`
+    CashAndShortTermInvestments               string `json:"cashAndShortTermInvestments"`
+    Inventory                                 string `json:"inventory"`
+    CurrentNetReceivables                     string `json:"currentNetReceivables"`
+    TotalNonCurrentAssets                     string `json:"totalNonCurrentAssets"`
+    PropertyPlantEquipment                    string `json:"propertyPlantEquipment"`
+    AccumulatedDepreciationAmortizationPPE    string `json:"accumulatedDepreciationAmortizationPPE"`
+    IntangibleAssets                          string `json:"intangibleAssets"`
+    IntangibleAssetsExcludingGoodwill         string `json:"intangibleAssetsExcludingGoodwill"`
+    Goodwill                                  string `json:"goodwill"`
+    Investments                               string `json:"investments"`
+    LongTermInvestments                       string `json:"longTermInvestments"`
+    ShortTermInvestments                      string `json:"shortTermInvestments"`
+    OtherCurrentAssets                        string `json:"otherCurrentAssets"`
+    OtherNonCurrentAssets                     string `json:"otherNonCurrentAssets"`
+    TotalLiabilities                          string `json:"totalLiabilities"`
+    TotalCurrentLiabilities                   string `json:"totalCurrentLiabilities"`
+    CurrentAccountsPayable                    string `json:"currentAccountsPayable"`
+    DeferredRevenue                           string `json:"deferredRevenue"`
+    CurrentDebt                               string `json:"currentDebt"`
+    ShortTermDebt                             string `json:"shortTermDebt"`
+    TotalNonCurrentLiabilities                string `json:"totalNonCurrentLiabilities"`
+    CapitalLeaseObligations                   string `json:"capitalLeaseObligations"`
+    LongTermDebt                              string `json:"longTermDebt"`
+    CurrentLongTermDebt                       string `json:"currentLongTermDebt"`
+    LongTermDebtNoncurrent                    string `json:"longTermDebtNoncurrent"`
+    ShortLongTermDebtTotal                    string `json:"shortLongTermDebtTotal"`
+    OtherCurrentLiabilities                   string `json:"otherCurrentLiabilities"`
+    OtherNonCurrentLiabilities                string `json:"otherNonCurrentLiabilities"`
+    TotalShareholderEquity                    string `json:"totalShareholderEquity"`
+    TreasuryStock                             string `json:"treasuryStock"`
+    RetainedEarnings                          string `json:"retainedEarnings"`
+    CommonStock                               string `json:"commonStock"`
+    CommonStockSharesOutstanding              string `json:"commonStockSharesOutstanding"`
+}
+
+type QuarterlyBalanceSheet struct {
+    FiscalDateEnding                          string `json:"fiscalDateEnding"`
+    ReportedCurrency                          string `json:"reportedCurrency"`
+    TotalAssets                               string `json:"totalAssets"`
+    TotalCurrentAssets                        string `json:"totalCurrentAssets"`
+    CashAndCashEquivalentsAtCarryingValue     string `json:"cashAndCashEquivalentsAtCarryingValue"`
+    CashAndShortTermInvestments               string `json:"cashAndShortTermInvestments"`
+    Inventory                                 string `json:"inventory"`
+    CurrentNetReceivables                     string `json:"currentNetReceivables"`
+    TotalNonCurrentAssets                     string `json:"totalNonCurrentAssets"`
+    PropertyPlantEquipment                    string `json:"propertyPlantEquipment"`
+    AccumulatedDepreciationAmortizationPPE    string `json:"accumulatedDepreciationAmortizationPPE"`
+    IntangibleAssets                          string `json:"intangibleAssets"`
+    IntangibleAssetsExcludingGoodwill         string `json:"intangibleAssetsExcludingGoodwill"`
+    Goodwill                                  string `json:"goodwill"`
+    Investments                               string `json:"investments"`
+    LongTermInvestments                       string `json:"longTermInvestments"`
+    ShortTermInvestments                      string `json:"shortTermInvestments"`
+    OtherCurrentAssets                        string `json:"otherCurrentAssets"`
+    OtherNonCurrentAssets                     string `json:"otherNonCurrentAssets"`
+    TotalLiabilities                          string `json:"totalLiabilities"`
+    TotalCurrentLiabilities                   string `json:"totalCurrentLiabilities"`
+    CurrentAccountsPayable                    string `json:"currentAccountsPayable"`
+    DeferredRevenue                           string `json:"deferredRevenue"`
+    CurrentDebt                               string `json:"currentDebt"`
+    ShortTermDebt                             string `json:"shortTermDebt"`
+    TotalNonCurrentLiabilities                string `json:"totalNonCurrentLiabilities"`
+    CapitalLeaseObligations                   string `json:"capitalLeaseObligations"`
+    LongTermDebt                              string `json:"longTermDebt"`
+    CurrentLongTermDebt                       string `json:"currentLongTermDebt"`
+    LongTermDebtNoncurrent                    string `json:"longTermDebtNoncurrent"`
+    ShortLongTermDebtTotal                    string `json:"shortLongTermDebtTotal"`
+    OtherCurrentLiabilities                   string `json:"otherCurrentLiabilities"`
+    OtherNonCurrentLiabilities                string `json:"otherNonCurrentLiabilities"`
+    TotalShareholderEquity                    string `json:"totalShareholderEquity"`
+    TreasuryStock                             string `json:"treasuryStock"`
+    RetainedEarnings                          string `json:"retainedEarnings"`
+    CommonStock                               string `json:"commonStock"`
+    CommonStockSharesOutstanding              string `json:"commonStockSharesOutstanding"`
+}
+
+func FetchBalanceSheet(ticker, apiKey string)(*IncomeStatement, error){
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=%s&apikey=%s",ticker,apiKey)
+
+	var incomeStatement IncomeStatement
+
+	incstmt, err := DataPull(url)
+	if err != nil{
+		return nil, fmt.Errorf("error: %v",err)
+	}
+
+	err = json.Unmarshal(incstmt,&incomeStatement)
+	if err != nil{
+		return nil, fmt.Errorf("failed to unmarshal JSON request: %v",err)
+	}
+
+	return &incomeStatement,nil
+} 
