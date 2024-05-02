@@ -28,7 +28,11 @@ type StockPrice struct {
 	Volume string `json:"5. volume"`
 }
 
-func IntradayDataPull(apiKey, ticker, interval string) (*TimeSeriesData, error) {
+/*
+! Intraday Time Series Data
+This API returns current and 20+ years of historical intraday OHLCV time series of the equity specified, covering extended trading hours where applicable (e.g., 4:00am to 8:00pm Eastern Time for the US market). You can query both raw (as-traded) and split/dividend-adjusted intraday data from this endpoint. The OHLCV data is sometimes called "candles" in finance literature.
+*/
+func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, error) {
 	/*
 	*	- Interval (1m,5m,15m,30m,60m)
 	 */
@@ -50,7 +54,11 @@ func IntradayDataPull(apiKey, ticker, interval string) (*TimeSeriesData, error) 
 	return &data, nil
 }
 
-func DailyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
+/*
+! Daily Time Series Data
+This API returns raw (as-traded) daily time series (date, daily open, daily high, daily low, daily close, daily volume) of the global equity specified, covering 20+ years of historical data. The OHLCV data is sometimes called "candles" in finance literature.
+*/
+func FetchDailyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
@@ -69,7 +77,11 @@ func DailyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
 	return &data, nil
 }
 
-func WeeklyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
+/*
+! Weekly Time Series Data
+This API returns weekly time series (last trading day of each week, weekly open, weekly high, weekly low, weekly close, weekly volume) of the global equity specified, covering 20+ years of historical data.
+*/
+func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
@@ -88,7 +100,11 @@ func WeeklyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
 	return &data, nil
 }
 
-func MonthlyDataPull(apiKey, ticker string) (*TimeSeriesData, error) {
+/*
+! Monthly Time Series Data
+This API returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.
+*/
+func FetchMonthlyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
