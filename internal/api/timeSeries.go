@@ -36,7 +36,7 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 	/*
 	*	- Interval (1m,5m,15m,30m,60m)
 	 */
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=%s&entitlement=delayed&apikey=%s", ticker, interval, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&outputsize=full&interval=%s&entitlement=delayed&apikey=%s", ticker, interval, apiKey)
 
 	var data TimeSeriesData
 
@@ -59,7 +59,7 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 This API returns raw (as-traded) daily time series (date, daily open, daily high, daily low, daily close, daily volume) of the global equity specified, covering 20+ years of historical data. The OHLCV data is sometimes called "candles" in finance literature.
 */
 func FetchDailyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&apikey=%s", ticker, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
 
@@ -82,7 +82,7 @@ func FetchDailyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 This API returns weekly time series (last trading day of each week, weekly open, weekly high, weekly low, weekly close, weekly volume) of the global equity specified, covering 20+ years of historical data.
 */
 func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&apikey=%s", ticker, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
 
@@ -105,7 +105,7 @@ func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 This API returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.
 */
 func FetchMonthlyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&apikey=%s", ticker, apiKey)
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
 	var data TimeSeriesData
 
