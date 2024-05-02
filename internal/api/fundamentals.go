@@ -6,6 +6,10 @@ import (
 	"mangomarkets/internal"
 )
 
+/*
+! Company info
+This API returns the company information, financial ratios, and other key metrics for the equity specified. Data is generally refreshed on the same day a company reports its latest earnings and financials.
+*/
 type CompanyInfo struct {
 	Symbol                     string `json:"Symbol"`
 	AssetType                  string `json:"AssetType"`
@@ -79,6 +83,11 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 	return &companyInfo, nil
 }
 
+/*
+! Income Statements
+
+This API returns the annual and quarterly income statements for the company of interest, with normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports its latest earnings and financials.
+*/
 type IncomeStatement struct {
 	Symbol                   string                     `json:"symbol"`
 	AnnualIncomeStatement    []AnnualIncomeStatement    `json:"annualReports"`
@@ -161,6 +170,10 @@ func FetchIncomeStatement(ticker, apiKey string) (*IncomeStatement, error) {
 	return &incomeStatement, nil
 }
 
+/*
+! Balance Sheets
+This API returns the annual and quarterly balance sheets for the company of interest, with normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports its latest earnings and financials.
+*/
 type BalanceSheet struct {
 	Symbol                string                  `json:"symbol"`
 	AnnualBalanceSheet    []AnnualBalanceSheet    `json:"annualReports"`
@@ -267,6 +280,10 @@ func FetchBalanceSheet(ticker, apiKey string) (*BalanceSheet, error) {
 	return &balanceSheet, nil
 }
 
+/*
+! Cash Flow
+This API returns the annual and quarterly cash flow for the company of interest, with normalized fields mapped to GAAP and IFRS taxonomies of the SEC. Data is generally refreshed on the same day a company reports its latest earnings and financials.
+*/
 type CashFlow struct {
 	Symbol            string              `json:"symbol"`
 	AnnualCashFlow    []AnnualCashFlow    `json:"annualReports"`
@@ -353,4 +370,46 @@ func FetchCashFlow(ticker, apiKey string) (*CashFlow, error) {
 	}
 
 	return &cash, nil
+}
+
+/*
+! Earnings
+This API returns the annual and quarterly earnings (EPS) for the company of interest. Quarterly data also includes analyst estimates and surprise metrics.
+*/
+type EarningsData struct {
+	Symbol            string              `json:"symbol"`
+	AnnualEarnings    []AnnualEarnings    `json:"annualEarnings"`
+	QuarterlyEarnings []QuarterlyEarnings `json:"quarterlyEarnings"`
+}
+
+type AnnualEarnings struct {
+	FiscalDateEnding string `json:"fiscalDateEnding"`
+	ReportedEPS      string `json:"reportedEPS"`
+}
+
+type QuarterlyEarnings struct {
+	FiscalDateEnding   string `json:"fiscalDateEnding"`
+	ReportedDate       string `json:"reportedDate"`
+	ReportedEPS        string `json:"reportedEPS"`
+	EstimatedEPS       string `json:"estimatedEPS"`
+	Surprise           string `json:"surprise"`
+	SurprisePercentage string `json:"surprisePercentage"`
+}
+
+func FetchEarnings(ticker, apiKey string) (*EarningsData, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=EARNINGS&symbol=%s&apikey=%s", ticker, apiKey)
+
+	var earningsReport EarningsData
+
+	report, err := DataPull(url)
+	if err != nil {
+		return nil, internal.ErrDataPull(err)
+	}
+
+	err = json.Unmarshal(report, &earningsReport)
+	if err != nil {
+		return nil, internal.ErrUnmarshalJSON(err)
+	}
+
+	return &earningsReport, nil
 }
