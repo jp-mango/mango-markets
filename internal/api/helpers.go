@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"strings"
+	"time"
 )
 
 // - Custom unmarshal to handle dynamic json requests for time series data
@@ -59,4 +61,22 @@ func DataPull(url string) ([]byte, error) {
 	}
 
 	return content, nil
+}
+
+func PrintTimeSeries(data TimeSeriesData) string {
+	var sb strings.Builder
+
+	keys := make([]string, 0, len(data.TimeSeries))
+	for k := range data.TimeSeries {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		v := data.TimeSeries[k]
+		sb.WriteString(fmt.Sprintf("| SERIAL #| %s| %s|Open: %s|High: %s|Low: %s|Close: %s|Volume: %s|Current Time: %s|\n", data.Metadata.Symbol, k, v.Open, v.High, v.Low, v.Close, v.Volume, time.Now()))
+	}
+
+	return sb.String()
 }
