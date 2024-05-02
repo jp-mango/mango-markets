@@ -73,9 +73,9 @@ func PrintTimeSeries(data TimeSeriesData) string {
 
 	sort.Strings(keys)
 
-	for _, k := range keys {
+	for i, k := range keys {
 		v := data.TimeSeries[k]
-		sb.WriteString(fmt.Sprintf("| SERIAL #| %s| %s|Open: %s|High: %s|Low: %s|Close: %s|Volume: %s|Current Time: %s|\n", data.Metadata.Symbol, k, v.Open, v.High, v.Low, v.Close, v.Volume, time.Now()))
+		sb.WriteString(fmt.Sprintf("| %d | %s | %s | Open: %s | High: %s | Low: %s | Close: %s | Volume: %s | Current Time: %s |\n", i, data.Metadata.Symbol, k, v.Open, v.High, v.Low, v.Close, v.Volume, time.Now()))
 	}
 
 	return sb.String()
