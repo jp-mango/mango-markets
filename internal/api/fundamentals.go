@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"mangomarkets/internal"
 )
 
 type CompanyInfo struct {
@@ -66,12 +67,12 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 
 	data, err := DataPull(url)
 	if err != nil {
-		return nil, fmt.Errorf("err: %s", err)
+		return nil, internal.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(data, &companyInfo)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON response: %v", err)
+		return nil, internal.ErrUnmarshalJSON(err)
 
 	}
 
@@ -79,7 +80,7 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 }
 
 type IncomeStatement struct {
-	Symbol           string            `json:"symbol"`
+	Symbol                   string                     `json:"symbol"`
 	AnnualIncomeStatement    []AnnualIncomeStatement    `json:"annualReports"`
 	QuarterlyIncomeStatement []QuarterlyIncomeStatement `json:"quarterlyReports"`
 }
@@ -149,189 +150,207 @@ func FetchIncomeStatement(ticker, apiKey string) (*IncomeStatement, error) {
 
 	data, err := DataPull(url)
 	if err != nil {
-		return nil, fmt.Errorf("err: %s", err)
+		return nil, internal.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(data, &incomeStatement)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
+		return nil, internal.ErrUnmarshalJSON(err)
 	}
 
 	return &incomeStatement, nil
 }
 
 type BalanceSheet struct {
-    Symbol         string            `json:"symbol"`
-    AnnualBalanceSheet  []AnnualBalanceSheet    `json:"annualReports"`
-    QuarterlyBalanceSheet []QuarterlyBalanceSheet `json:"quarterlyReports"`
+	Symbol                string                  `json:"symbol"`
+	AnnualBalanceSheet    []AnnualBalanceSheet    `json:"annualReports"`
+	QuarterlyBalanceSheet []QuarterlyBalanceSheet `json:"quarterlyReports"`
 }
 
 type AnnualBalanceSheet struct {
-    FiscalDateEnding                          string `json:"fiscalDateEnding"`
-    ReportedCurrency                          string `json:"reportedCurrency"`
-    TotalAssets                               string `json:"totalAssets"`
-    TotalCurrentAssets                        string `json:"totalCurrentAssets"`
-    CashAndCashEquivalentsAtCarryingValue     string `json:"cashAndCashEquivalentsAtCarryingValue"`
-    CashAndShortTermInvestments               string `json:"cashAndShortTermInvestments"`
-    Inventory                                 string `json:"inventory"`
-    CurrentNetReceivables                     string `json:"currentNetReceivables"`
-    TotalNonCurrentAssets                     string `json:"totalNonCurrentAssets"`
-    PropertyPlantEquipment                    string `json:"propertyPlantEquipment"`
-    AccumulatedDepreciationAmortizationPPE    string `json:"accumulatedDepreciationAmortizationPPE"`
-    IntangibleAssets                          string `json:"intangibleAssets"`
-    IntangibleAssetsExcludingGoodwill         string `json:"intangibleAssetsExcludingGoodwill"`
-    Goodwill                                  string `json:"goodwill"`
-    Investments                               string `json:"investments"`
-    LongTermInvestments                       string `json:"longTermInvestments"`
-    ShortTermInvestments                      string `json:"shortTermInvestments"`
-    OtherCurrentAssets                        string `json:"otherCurrentAssets"`
-    OtherNonCurrentAssets                     string `json:"otherNonCurrentAssets"`
-    TotalLiabilities                          string `json:"totalLiabilities"`
-    TotalCurrentLiabilities                   string `json:"totalCurrentLiabilities"`
-    CurrentAccountsPayable                    string `json:"currentAccountsPayable"`
-    DeferredRevenue                           string `json:"deferredRevenue"`
-    CurrentDebt                               string `json:"currentDebt"`
-    ShortTermDebt                             string `json:"shortTermDebt"`
-    TotalNonCurrentLiabilities                string `json:"totalNonCurrentLiabilities"`
-    CapitalLeaseObligations                   string `json:"capitalLeaseObligations"`
-    LongTermDebt                              string `json:"longTermDebt"`
-    CurrentLongTermDebt                       string `json:"currentLongTermDebt"`
-    LongTermDebtNoncurrent                    string `json:"longTermDebtNoncurrent"`
-    ShortLongTermDebtTotal                    string `json:"shortLongTermDebtTotal"`
-    OtherCurrentLiabilities                   string `json:"otherCurrentLiabilities"`
-    OtherNonCurrentLiabilities                string `json:"otherNonCurrentLiabilities"`
-    TotalShareholderEquity                    string `json:"totalShareholderEquity"`
-    TreasuryStock                             string `json:"treasuryStock"`
-    RetainedEarnings                          string `json:"retainedEarnings"`
-    CommonStock                               string `json:"commonStock"`
-    CommonStockSharesOutstanding              string `json:"commonStockSharesOutstanding"`
+	FiscalDateEnding                       string `json:"fiscalDateEnding"`
+	ReportedCurrency                       string `json:"reportedCurrency"`
+	TotalAssets                            string `json:"totalAssets"`
+	TotalCurrentAssets                     string `json:"totalCurrentAssets"`
+	CashAndCashEquivalentsAtCarryingValue  string `json:"cashAndCashEquivalentsAtCarryingValue"`
+	CashAndShortTermInvestments            string `json:"cashAndShortTermInvestments"`
+	Inventory                              string `json:"inventory"`
+	CurrentNetReceivables                  string `json:"currentNetReceivables"`
+	TotalNonCurrentAssets                  string `json:"totalNonCurrentAssets"`
+	PropertyPlantEquipment                 string `json:"propertyPlantEquipment"`
+	AccumulatedDepreciationAmortizationPPE string `json:"accumulatedDepreciationAmortizationPPE"`
+	IntangibleAssets                       string `json:"intangibleAssets"`
+	IntangibleAssetsExcludingGoodwill      string `json:"intangibleAssetsExcludingGoodwill"`
+	Goodwill                               string `json:"goodwill"`
+	Investments                            string `json:"investments"`
+	LongTermInvestments                    string `json:"longTermInvestments"`
+	ShortTermInvestments                   string `json:"shortTermInvestments"`
+	OtherCurrentAssets                     string `json:"otherCurrentAssets"`
+	OtherNonCurrentAssets                  string `json:"otherNonCurrentAssets"`
+	TotalLiabilities                       string `json:"totalLiabilities"`
+	TotalCurrentLiabilities                string `json:"totalCurrentLiabilities"`
+	CurrentAccountsPayable                 string `json:"currentAccountsPayable"`
+	DeferredRevenue                        string `json:"deferredRevenue"`
+	CurrentDebt                            string `json:"currentDebt"`
+	ShortTermDebt                          string `json:"shortTermDebt"`
+	TotalNonCurrentLiabilities             string `json:"totalNonCurrentLiabilities"`
+	CapitalLeaseObligations                string `json:"capitalLeaseObligations"`
+	LongTermDebt                           string `json:"longTermDebt"`
+	CurrentLongTermDebt                    string `json:"currentLongTermDebt"`
+	LongTermDebtNoncurrent                 string `json:"longTermDebtNoncurrent"`
+	ShortLongTermDebtTotal                 string `json:"shortLongTermDebtTotal"`
+	OtherCurrentLiabilities                string `json:"otherCurrentLiabilities"`
+	OtherNonCurrentLiabilities             string `json:"otherNonCurrentLiabilities"`
+	TotalShareholderEquity                 string `json:"totalShareholderEquity"`
+	TreasuryStock                          string `json:"treasuryStock"`
+	RetainedEarnings                       string `json:"retainedEarnings"`
+	CommonStock                            string `json:"commonStock"`
+	CommonStockSharesOutstanding           string `json:"commonStockSharesOutstanding"`
 }
 
 type QuarterlyBalanceSheet struct {
-    FiscalDateEnding                          string `json:"fiscalDateEnding"`
-    ReportedCurrency                          string `json:"reportedCurrency"`
-    TotalAssets                               string `json:"totalAssets"`
-    TotalCurrentAssets                        string `json:"totalCurrentAssets"`
-    CashAndCashEquivalentsAtCarryingValue     string `json:"cashAndCashEquivalentsAtCarryingValue"`
-    CashAndShortTermInvestments               string `json:"cashAndShortTermInvestments"`
-    Inventory                                 string `json:"inventory"`
-    CurrentNetReceivables                     string `json:"currentNetReceivables"`
-    TotalNonCurrentAssets                     string `json:"totalNonCurrentAssets"`
-    PropertyPlantEquipment                    string `json:"propertyPlantEquipment"`
-    AccumulatedDepreciationAmortizationPPE    string `json:"accumulatedDepreciationAmortizationPPE"`
-    IntangibleAssets                          string `json:"intangibleAssets"`
-    IntangibleAssetsExcludingGoodwill         string `json:"intangibleAssetsExcludingGoodwill"`
-    Goodwill                                  string `json:"goodwill"`
-    Investments                               string `json:"investments"`
-    LongTermInvestments                       string `json:"longTermInvestments"`
-    ShortTermInvestments                      string `json:"shortTermInvestments"`
-    OtherCurrentAssets                        string `json:"otherCurrentAssets"`
-    OtherNonCurrentAssets                     string `json:"otherNonCurrentAssets"`
-    TotalLiabilities                          string `json:"totalLiabilities"`
-    TotalCurrentLiabilities                   string `json:"totalCurrentLiabilities"`
-    CurrentAccountsPayable                    string `json:"currentAccountsPayable"`
-    DeferredRevenue                           string `json:"deferredRevenue"`
-    CurrentDebt                               string `json:"currentDebt"`
-    ShortTermDebt                             string `json:"shortTermDebt"`
-    TotalNonCurrentLiabilities                string `json:"totalNonCurrentLiabilities"`
-    CapitalLeaseObligations                   string `json:"capitalLeaseObligations"`
-    LongTermDebt                              string `json:"longTermDebt"`
-    CurrentLongTermDebt                       string `json:"currentLongTermDebt"`
-    LongTermDebtNoncurrent                    string `json:"longTermDebtNoncurrent"`
-    ShortLongTermDebtTotal                    string `json:"shortLongTermDebtTotal"`
-    OtherCurrentLiabilities                   string `json:"otherCurrentLiabilities"`
-    OtherNonCurrentLiabilities                string `json:"otherNonCurrentLiabilities"`
-    TotalShareholderEquity                    string `json:"totalShareholderEquity"`
-    TreasuryStock                             string `json:"treasuryStock"`
-    RetainedEarnings                          string `json:"retainedEarnings"`
-    CommonStock                               string `json:"commonStock"`
-    CommonStockSharesOutstanding              string `json:"commonStockSharesOutstanding"`
+	FiscalDateEnding                       string `json:"fiscalDateEnding"`
+	ReportedCurrency                       string `json:"reportedCurrency"`
+	TotalAssets                            string `json:"totalAssets"`
+	TotalCurrentAssets                     string `json:"totalCurrentAssets"`
+	CashAndCashEquivalentsAtCarryingValue  string `json:"cashAndCashEquivalentsAtCarryingValue"`
+	CashAndShortTermInvestments            string `json:"cashAndShortTermInvestments"`
+	Inventory                              string `json:"inventory"`
+	CurrentNetReceivables                  string `json:"currentNetReceivables"`
+	TotalNonCurrentAssets                  string `json:"totalNonCurrentAssets"`
+	PropertyPlantEquipment                 string `json:"propertyPlantEquipment"`
+	AccumulatedDepreciationAmortizationPPE string `json:"accumulatedDepreciationAmortizationPPE"`
+	IntangibleAssets                       string `json:"intangibleAssets"`
+	IntangibleAssetsExcludingGoodwill      string `json:"intangibleAssetsExcludingGoodwill"`
+	Goodwill                               string `json:"goodwill"`
+	Investments                            string `json:"investments"`
+	LongTermInvestments                    string `json:"longTermInvestments"`
+	ShortTermInvestments                   string `json:"shortTermInvestments"`
+	OtherCurrentAssets                     string `json:"otherCurrentAssets"`
+	OtherNonCurrentAssets                  string `json:"otherNonCurrentAssets"`
+	TotalLiabilities                       string `json:"totalLiabilities"`
+	TotalCurrentLiabilities                string `json:"totalCurrentLiabilities"`
+	CurrentAccountsPayable                 string `json:"currentAccountsPayable"`
+	DeferredRevenue                        string `json:"deferredRevenue"`
+	CurrentDebt                            string `json:"currentDebt"`
+	ShortTermDebt                          string `json:"shortTermDebt"`
+	TotalNonCurrentLiabilities             string `json:"totalNonCurrentLiabilities"`
+	CapitalLeaseObligations                string `json:"capitalLeaseObligations"`
+	LongTermDebt                           string `json:"longTermDebt"`
+	CurrentLongTermDebt                    string `json:"currentLongTermDebt"`
+	LongTermDebtNoncurrent                 string `json:"longTermDebtNoncurrent"`
+	ShortLongTermDebtTotal                 string `json:"shortLongTermDebtTotal"`
+	OtherCurrentLiabilities                string `json:"otherCurrentLiabilities"`
+	OtherNonCurrentLiabilities             string `json:"otherNonCurrentLiabilities"`
+	TotalShareholderEquity                 string `json:"totalShareholderEquity"`
+	TreasuryStock                          string `json:"treasuryStock"`
+	RetainedEarnings                       string `json:"retainedEarnings"`
+	CommonStock                            string `json:"commonStock"`
+	CommonStockSharesOutstanding           string `json:"commonStockSharesOutstanding"`
 }
 
-func FetchBalanceSheet(ticker, apiKey string)(*IncomeStatement, error){
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=%s&apikey=%s",ticker,apiKey)
+func FetchBalanceSheet(ticker, apiKey string) (*BalanceSheet, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=%s&apikey=%s", ticker, apiKey)
 
-	var incomeStatement IncomeStatement
+	var balanceSheet BalanceSheet
 
-	incstmt, err := DataPull(url)
-	if err != nil{
-		return nil, fmt.Errorf("error: %v",err)
+	bal, err := DataPull(url)
+	if err != nil {
+		return nil, internal.ErrDataPull(err)
 	}
 
-	err = json.Unmarshal(incstmt,&incomeStatement)
-	if err != nil{
-		return nil, fmt.Errorf("failed to unmarshal JSON request: %v",err)
+	err = json.Unmarshal(bal, &balanceSheet)
+	if err != nil {
+		return nil, internal.ErrUnmarshalJSON(err)
 	}
 
-	return &incomeStatement,nil
+	return &balanceSheet, nil
 }
 
-type FinancialData struct {
-    Symbol           string             `json:"symbol"`
-    AnnualReports    []AnnualReport     `json:"annualReports"`
-    QuarterlyReports []QuarterlyReport  `json:"quarterlyReports"`
+type CashFlow struct {
+	Symbol            string              `json:"symbol"`
+	AnnualCashFlow    []AnnualCashFlow    `json:"annualReports"`
+	QuarterlyCashFlow []QuarterlyCashFlow `json:"quarterlyReports"`
 }
 
-type AnnualReport struct {
-    FiscalDateEnding                                  string `json:"fiscalDateEnding"`
-    ReportedCurrency                                  string `json:"reportedCurrency"`
-    OperatingCashflow                                 string `json:"operatingCashflow"`
-    PaymentsForOperatingActivities                    string `json:"paymentsForOperatingActivities"`
-    ProceedsFromOperatingActivities                   string `json:"proceedsFromOperatingActivities"`
-    ChangeInOperatingLiabilities                      string `json:"changeInOperatingLiabilities"`
-    ChangeInOperatingAssets                           string `json:"changeInOperatingAssets"`
-    DepreciationDepletionAndAmortization              string `json:"depreciationDepletionAndAmortization"`
-    CapitalExpenditures                               string `json:"capitalExpenditures"`
-    ChangeInReceivables                               string `json:"changeInReceivables"`
-    ChangeInInventory                                 string `json:"changeInInventory"`
-    ProfitLoss                                        string `json:"profitLoss"`
-    CashflowFromInvestment                            string `json:"cashflowFromInvestment"`
-    CashflowFromFinancing                             string `json:"cashflowFromFinancing"`
-    ProceedsFromRepaymentsOfShortTermDebt             string `json:"proceedsFromRepaymentsOfShortTermDebt"`
-    PaymentsForRepurchaseOfCommonStock                string `json:"paymentsForRepurchaseOfCommonStock"`
-    PaymentsForRepurchaseOfEquity                     string `json:"paymentsForRepurchaseOfEquity"`
-    PaymentsForRepurchaseOfPreferredStock             string `json:"paymentsForRepurchaseOfPreferredStock"`
-    DividendPayout                                    string `json:"dividendPayout"`
-    DividendPayoutCommonStock                         string `json:"dividendPayoutCommonStock"`
-    DividendPayoutPreferredStock                      string `json:"dividendPayoutPreferredStock"`
-    ProceedsFromIssuanceOfCommonStock                 string `json:"proceedsFromIssuanceOfCommonStock"`
-    ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet string `json:"proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"`
-    ProceedsFromIssuanceOfPreferredStock              string `json:"proceedsFromIssuanceOfPreferredStock"`
-    ProceedsFromRepurchaseOfEquity                    string `json:"proceedsFromRepurchaseOfEquity"`
-    ProceedsFromSaleOfTreasuryStock                   string `json:"proceedsFromSaleOfTreasuryStock"`
-    ChangeInCashAndCashEquivalents                    string `json:"changeInCashAndCashEquivalents"`
-    ChangeInExchangeRate                              string `json:"changeInExchangeRate"`
-    NetIncome                                         string `json:"netIncome"`
+type AnnualCashFlow struct {
+	FiscalDateEnding                                          string `json:"fiscalDateEnding"`
+	ReportedCurrency                                          string `json:"reportedCurrency"`
+	OperatingCashflow                                         string `json:"operatingCashflow"`
+	PaymentsForOperatingActivities                            string `json:"paymentsForOperatingActivities"`
+	ProceedsFromOperatingActivities                           string `json:"proceedsFromOperatingActivities"`
+	ChangeInOperatingLiabilities                              string `json:"changeInOperatingLiabilities"`
+	ChangeInOperatingAssets                                   string `json:"changeInOperatingAssets"`
+	DepreciationDepletionAndAmortization                      string `json:"depreciationDepletionAndAmortization"`
+	CapitalExpenditures                                       string `json:"capitalExpenditures"`
+	ChangeInReceivables                                       string `json:"changeInReceivables"`
+	ChangeInInventory                                         string `json:"changeInInventory"`
+	ProfitLoss                                                string `json:"profitLoss"`
+	CashflowFromInvestment                                    string `json:"cashflowFromInvestment"`
+	CashflowFromFinancing                                     string `json:"cashflowFromFinancing"`
+	ProceedsFromRepaymentsOfShortTermDebt                     string `json:"proceedsFromRepaymentsOfShortTermDebt"`
+	PaymentsForRepurchaseOfCommonStock                        string `json:"paymentsForRepurchaseOfCommonStock"`
+	PaymentsForRepurchaseOfEquity                             string `json:"paymentsForRepurchaseOfEquity"`
+	PaymentsForRepurchaseOfPreferredStock                     string `json:"paymentsForRepurchaseOfPreferredStock"`
+	DividendPayout                                            string `json:"dividendPayout"`
+	DividendPayoutCommonStock                                 string `json:"dividendPayoutCommonStock"`
+	DividendPayoutPreferredStock                              string `json:"dividendPayoutPreferredStock"`
+	ProceedsFromIssuanceOfCommonStock                         string `json:"proceedsFromIssuanceOfCommonStock"`
+	ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet string `json:"proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"`
+	ProceedsFromIssuanceOfPreferredStock                      string `json:"proceedsFromIssuanceOfPreferredStock"`
+	ProceedsFromRepurchaseOfEquity                            string `json:"proceedsFromRepurchaseOfEquity"`
+	ProceedsFromSaleOfTreasuryStock                           string `json:"proceedsFromSaleOfTreasuryStock"`
+	ChangeInCashAndCashEquivalents                            string `json:"changeInCashAndCashEquivalents"`
+	ChangeInExchangeRate                                      string `json:"changeInExchangeRate"`
+	NetIncome                                                 string `json:"netIncome"`
 }
 
-type QuarterlyReport struct {
-    FiscalDateEnding                                  string `json:"fiscalDateEnding"`
-    ReportedCurrency                                  string `json:"reportedCurrency"`
-    OperatingCashflow                                 string `json:"operatingCashflow"`
-    PaymentsForOperatingActivities                    string `json:"paymentsForOperatingActivities"`
-    ProceedsFromOperatingActivities                   string `json:"proceedsFromOperatingActivities"`
-    ChangeInOperatingLiabilities                      string `json:"changeInOperatingLiabilities"`
-    ChangeInOperatingAssets                           string `json:"changeInOperatingAssets"`
-    DepreciationDepletionAndAmortization              string `json:"depreciationDepletionAndAmortization"`
-    CapitalExpenditures                               string `json:"capitalExpenditures"`
-    ChangeInReceivables                               string `json:"changeInReceivables"`
-    ChangeInInventory                                 string `json:"changeInInventory"`
-    ProfitLoss                                        string `json:"profitLoss"`
-    CashflowFromInvestment                            string `json:"cashflowFromInvestment"`
-    CashflowFromFinancing                             string `json:"cashflowFromFinancing"`
-    ProceedsFromRepaymentsOfShortTermDebt             string `json:"proceedsFromRepaymentsOfShortTermDebt"`
-    PaymentsForRepurchaseOfCommonStock                string `json:"paymentsForRepurchaseOfCommonStock"`
-    PaymentsForRepurchaseOfEquity                     string `json:"paymentsForRepurchaseOfEquity"`
-    PaymentsForRepurchaseOfPreferredStock             string `json:"paymentsForRepurchaseOfPreferredStock"`
-    DividendPayout                                    string `json:"dividendPayout"`
-    DividendPayoutCommonStock                         string `json:"dividendPayoutCommonStock"`
-    DividendPayoutPreferredStock                      string `json:"dividendPayoutPreferredStock"`
-    ProceedsFromIssuanceOfCommonStock                 string `json:"proceedsFromIssuanceOfCommonStock"`
-    ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet string `json:"proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"`
-    ProceedsFromIssuanceOfPreferredStock              string `json:"proceedsFromIssuanceOfPreferredStock"`
-    ProceedsFromRepurchaseOfEquity                    string `json:"proceedsFromRepurchaseOfEquity"`
-    ProceedsFromSaleOfTreasuryStock                   string `json:"proceedsFromSaleOfTreasuryStock"`
-    ChangeInCashAndCashEquivalents                    string `json:"changeInCashAndCashEquivalents"`
-    ChangeInExchangeRate                              string `json:"changeInExchangeRate"`
-    NetIncome                                         string `json:"netIncome"`
+type QuarterlyCashFlow struct {
+	FiscalDateEnding                                          string `json:"fiscalDateEnding"`
+	ReportedCurrency                                          string `json:"reportedCurrency"`
+	OperatingCashflow                                         string `json:"operatingCashflow"`
+	PaymentsForOperatingActivities                            string `json:"paymentsForOperatingActivities"`
+	ProceedsFromOperatingActivities                           string `json:"proceedsFromOperatingActivities"`
+	ChangeInOperatingLiabilities                              string `json:"changeInOperatingLiabilities"`
+	ChangeInOperatingAssets                                   string `json:"changeInOperatingAssets"`
+	DepreciationDepletionAndAmortization                      string `json:"depreciationDepletionAndAmortization"`
+	CapitalExpenditures                                       string `json:"capitalExpenditures"`
+	ChangeInReceivables                                       string `json:"changeInReceivables"`
+	ChangeInInventory                                         string `json:"changeInInventory"`
+	ProfitLoss                                                string `json:"profitLoss"`
+	CashflowFromInvestment                                    string `json:"cashflowFromInvestment"`
+	CashflowFromFinancing                                     string `json:"cashflowFromFinancing"`
+	ProceedsFromRepaymentsOfShortTermDebt                     string `json:"proceedsFromRepaymentsOfShortTermDebt"`
+	PaymentsForRepurchaseOfCommonStock                        string `json:"paymentsForRepurchaseOfCommonStock"`
+	PaymentsForRepurchaseOfEquity                             string `json:"paymentsForRepurchaseOfEquity"`
+	PaymentsForRepurchaseOfPreferredStock                     string `json:"paymentsForRepurchaseOfPreferredStock"`
+	DividendPayout                                            string `json:"dividendPayout"`
+	DividendPayoutCommonStock                                 string `json:"dividendPayoutCommonStock"`
+	DividendPayoutPreferredStock                              string `json:"dividendPayoutPreferredStock"`
+	ProceedsFromIssuanceOfCommonStock                         string `json:"proceedsFromIssuanceOfCommonStock"`
+	ProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet string `json:"proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"`
+	ProceedsFromIssuanceOfPreferredStock                      string `json:"proceedsFromIssuanceOfPreferredStock"`
+	ProceedsFromRepurchaseOfEquity                            string `json:"proceedsFromRepurchaseOfEquity"`
+	ProceedsFromSaleOfTreasuryStock                           string `json:"proceedsFromSaleOfTreasuryStock"`
+	ChangeInCashAndCashEquivalents                            string `json:"changeInCashAndCashEquivalents"`
+	ChangeInExchangeRate                                      string `json:"changeInExchangeRate"`
+	NetIncome                                                 string `json:"netIncome"`
+}
+
+func FetchCashFlow(ticker, apiKey string) (*CashFlow, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=CASH_FLOW&symbol=%s&apikey=%s", ticker, apiKey)
+
+	var cash CashFlow
+
+	data, err := DataPull(url)
+	if err != nil {
+		return nil, internal.ErrDataPull(err)
+	}
+
+	err = json.Unmarshal(data, &cash)
+	if err != nil {
+		return nil, internal.ErrUnmarshalJSON(err)
+	}
+
+	return &cash, nil
 }
