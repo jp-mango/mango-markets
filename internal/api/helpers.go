@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// ! Custom unmarshal to handle dynamic json requests
+// - Custom unmarshal to handle dynamic json requests for time series data
 func (t *TimeSeriesData) UnmarshalJSON(data []byte) error {
 	var raw map[string]json.RawMessage
 	err := json.Unmarshal(data, &raw)
@@ -45,7 +45,7 @@ func (t *TimeSeriesData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ! Pull the data from the api
+// - Pull the data from the api, allowing you to unmarshal json into desired struct
 func DataPull(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
