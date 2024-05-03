@@ -63,7 +63,7 @@ func DataPull(url string) ([]byte, error) {
 	return content, nil
 }
 
-func PrintTimeSeries(data TimeSeriesData) string {
+func PrintTimeSeries(data *TimeSeriesData) string {
 	var sb strings.Builder
 
 	keys := make([]string, 0, len(data.TimeSeries))
