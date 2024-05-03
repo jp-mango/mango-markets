@@ -12,6 +12,10 @@ func ErrUnmarshalJSON(err error) error {
 	return fmt.Errorf("failed to unmarshal JSON response: %v", err)
 }
 
-func ERRInvalidAPIRequest(err string) error {
-	return fmt.Errorf("API query error: %v", err)
+func ErrInvalidAPIRequest(err string) error {
+	return fmt.Errorf("api query error: %v", err)
+}
+
+func ErrCompanyInfo(err string) error {
+	return fmt.Errorf("unable to query company info: %v", err)
 }
