@@ -61,12 +61,17 @@ func DataPull(url string) ([]byte, error) {
 		return nil, fmt.Errorf("error reading response: %s", err)
 	}
 
+	if strings.Contains(string(content), "Error Message") {
+		return nil, errors.ErrInvalidAPIRequest(string(content))
+	}
+
 	return content, nil
 }
 
 // Pull and unmarshal to reduce boilerplate in timeSeries.go
 func pullUnmarshTSD(url string) (*TimeSeriesData, error) {
 	var data TimeSeriesData
+
 	content, err := DataPull(url)
 	if err != nil {
 		return nil, errors.ErrDataPull(err)
