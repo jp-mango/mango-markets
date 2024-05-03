@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"mangomarkets/internal/api"
 	"mangomarkets/internal/load"
 
 	_ "github.com/lib/pq"
@@ -20,7 +19,7 @@ func main() {
 	defer logFile.Close()
 
 	//! Load env variables
-	apiKey, DB_CONN, err := load.Env()
+	_, DB_CONN, err := load.Env()
 	if err != nil {
 		logger.Error(err.Error())
 	}
@@ -34,27 +33,5 @@ func main() {
 	defer db.Close()
 
 	//! bizniz logic
-	// Daily
-	dailyData, err := api.FetchDailyTSData(apiKey, "AAPL")
-	if err != nil || dailyData == nil {
-		logger.Error(err.Error())
-	} else {
-		fmt.Println(api.PrintTimeSeries(dailyData))
-	}
 
-	// Weekly
-	weeklyData, err := api.FetchWeeklyTSData(apiKey, "AMD")
-	if err != nil || weeklyData == nil {
-		logger.Error(err.Error())
-	} else {
-		fmt.Println(api.PrintTimeSeries(weeklyData))
-	}
-
-	// Monthly
-	monthlyData, err := api.FetchMonthlyTSData(apiKey, "NVDA")
-	if err != nil || monthlyData == nil {
-		logger.Error(err.Error())
-	} else {
-		fmt.Println(api.PrintTimeSeries(monthlyData))
-	}
 }
