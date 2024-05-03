@@ -60,7 +60,7 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 }
 
 /*
-TODO: Implement this function.
+TODO: Implement this function
 func (ts TSDataModel) InsertIntraday(data *TimeSeriesData) error{
 	query := `
 	INSERT INTO daily_stock_data
