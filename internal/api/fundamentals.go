@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"mangomarkets/internal/errors"
 )
 
@@ -79,6 +80,8 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 		return nil, errors.ErrUnmarshalJSON(err)
 
 	}
+
+	slog.Info("company info queried", "Ticker", ticker)
 
 	return &companyInfo, nil
 }
