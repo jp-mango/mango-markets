@@ -46,7 +46,7 @@ func DB(DB_CONN string) (*sql.DB, error) {
 
 func Env() (API_KEY, DB_CONN string, err error) {
 	err = godotenv.Load()
-	//* (UNCOMMENT FOR DEBUGGING) //err = godotenv.Load("../.env")
+	//err = godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
