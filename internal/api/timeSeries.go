@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 )
 
@@ -43,38 +42,24 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 	 */
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&outputsize=full&interval=%s&entitlement=delayed&apikey=%s", ticker, interval, apiKey)
 
-	var data TimeSeriesData
-
-	content, err := DataPull(url)
-	if err != nil {
-		return nil, fmt.Errorf("error: %s", err)
-
-	}
-
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
-	}
-
-	return &data, nil
+	return pullUnmarshTSD(url)
 }
 
 /*
-TODO: Implement this function
-func (ts TSDataModel) InsertIntraday(data *TimeSeriesData) error{
-	query := `
-	INSERT INTO daily_stock_data
-	(ticker, price_data,high,low,close,volume)
-	VALUES($1, $2, $3, $4,$5,$6)
-	RETURNING ticker`
+	func (ts TSDataModel) InsertIntraday(data *TimeSeriesData) {
+		query := `
+		INSERT INTO daily_stock_data
+		(ticker, price_data,high,low,close,volume)
+		VALUES($1, $2, $3, $4,$5,$6)`
 
-	args := []any{}
+		args := []any{}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
 
-	rows, err := ts.DB.QueryContext(ctx,query,args...)
-}
+		rows, err := ts.DB.QueryContext(ctx, query, args...)
+	}
+
 */
 /*
 ! Daily Time Series Data
@@ -83,20 +68,7 @@ This API returns raw (as-traded) daily time series (date, daily open, daily high
 func FetchDailyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
-	var data TimeSeriesData
-
-	content, err := DataPull(url)
-	if err != nil {
-		return nil, fmt.Errorf("error: %s", err)
-
-	}
-
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
-	}
-
-	return &data, nil
+	return pullUnmarshTSD(url)
 }
 
 /*
@@ -106,20 +78,7 @@ This API returns weekly time series (last trading day of each week, weekly open,
 func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
-	var data TimeSeriesData
-
-	content, err := DataPull(url)
-	if err != nil {
-		return nil, fmt.Errorf("error: %s", err)
-
-	}
-
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
-	}
-
-	return &data, nil
+	return pullUnmarshTSD(url)
 }
 
 /*
@@ -129,18 +88,5 @@ This API returns monthly time series (last trading day of each month, monthly op
 func FetchMonthlyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
-	var data TimeSeriesData
-
-	content, err := DataPull(url)
-	if err != nil {
-		return nil, fmt.Errorf("error: %s", err)
-
-	}
-
-	err = json.Unmarshal(content, &data)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshaling JSON: %s", err)
-	}
-
-	return &data, nil
+	return pullUnmarshTSD(url)
 }
