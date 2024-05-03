@@ -1,4 +1,4 @@
-package init
+package load
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadLogging() (*slog.Logger, *os.File, error) {
+func Logging() (*slog.Logger, *os.File, error) {
 	logLocation, err := os.OpenFile(`./log_records/logs.jsonl`, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error opening log file: %v", err)
@@ -26,7 +26,7 @@ func LoadLogging() (*slog.Logger, *os.File, error) {
 	return logger, logLocation, nil
 }
 
-func LoadDB(DB_CONN string) (*sql.DB, error) {
+func DB(DB_CONN string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", DB_CONN)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func LoadDB(DB_CONN string) (*sql.DB, error) {
 	return db, nil
 }
 
-func LoadEnv() (API_KEY, DB_CONN string, err error) {
+func Env() (API_KEY, DB_CONN string, err error) {
 	err = godotenv.Load()
 	//* (UNCOMMENT FOR DEBUGGING) //err = godotenv.Load("../.env")
 	if err != nil {
