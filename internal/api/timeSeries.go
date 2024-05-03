@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 )
 
 type TimeSeriesData struct {
@@ -42,6 +43,8 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 	 */
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&outputsize=full&interval=%s&entitlement=delayed&apikey=%s", ticker, interval, apiKey)
 
+	slog.Info("intraday time series data queried", "Ticker", ticker)
+
 	return pullUnmarshTSD(url)
 }
 
@@ -68,6 +71,8 @@ This API returns raw (as-traded) daily time series (date, daily open, daily high
 func FetchDailyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
+	slog.Info("daily time series data queried", "Ticker", ticker)
+
 	return pullUnmarshTSD(url)
 }
 
@@ -78,6 +83,8 @@ This API returns weekly time series (last trading day of each week, weekly open,
 func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
 
+	slog.Info("weekly time series data queried", "Ticker", ticker)
+
 	return pullUnmarshTSD(url)
 }
 
@@ -87,6 +94,8 @@ This API returns monthly time series (last trading day of each month, monthly op
 */
 func FetchMonthlyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 	url := fmt.Sprintf("https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&outputsize=full&apikey=%s", ticker, apiKey)
+
+	slog.Info("monthly time series data queried", "Ticker", ticker)
 
 	return pullUnmarshTSD(url)
 }
