@@ -80,7 +80,7 @@ func pullUnmarshTSD(url string) (*TimeSeriesData, error) {
 	return &data, nil
 }
 
-// Prints time series data (NEED TO FIX INTRADAY)
+// Prints time series data
 func PrintTimeSeries(data *TimeSeriesData) string {
 	var sb strings.Builder
 
