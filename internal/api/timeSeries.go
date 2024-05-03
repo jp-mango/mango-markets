@@ -29,9 +29,10 @@ type StockPrice struct {
 	Volume string `json:"5. volume"`
 }
 
-type TSDataModel struct{
+type TSDataModel struct {
 	DB *sql.DB
 }
+
 /*
 ! Intraday Time Series Data
 This API returns current and 20+ years of historical intraday OHLCV time series of the equity specified, covering extended trading hours where applicable (e.g., 4:00am to 8:00pm Eastern Time for the US market). You can query both raw (as-traded) and split/dividend-adjusted intraday data from this endpoint. The OHLCV data is sometimes called "candles" in finance literature.
@@ -57,12 +58,13 @@ func FetchIntradayTSData(apiKey, ticker, interval string) (*TimeSeriesData, erro
 
 	return &data, nil
 }
+
 /*
-TODO: Implement this function
+TODO: Implement this function.
 func (ts TSDataModel) InsertIntraday(data *TimeSeriesData) error{
 	query := `
 	INSERT INTO daily_stock_data
-	(ticker, price_data,high,low,close,volume) 
+	(ticker, price_data,high,low,close,volume)
 	VALUES($1, $2, $3, $4,$5,$6)
 	RETURNING ticker`
 
