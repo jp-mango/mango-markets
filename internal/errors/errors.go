@@ -1,4 +1,4 @@
-package internal
+package errors
 
 import "fmt"
 
@@ -10,4 +10,8 @@ func ErrDataPull(err error) error {
 // Returns an error if unmarshalling json into struct fails
 func ErrUnmarshalJSON(err error) error {
 	return fmt.Errorf("failed to unmarshal JSON response: %v", err)
+}
+
+func ERRInvalidAPIRequest(err string) error {
+	return fmt.Errorf("API query error: %v", err)
 }
