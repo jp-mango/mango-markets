@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"mangomarkets/internal"
+	"mangomarkets/internal/errors"
 )
 
 type CompanyInfo struct {
@@ -71,12 +71,12 @@ func FetchCompanyInfo(ticker, apiKey string) (*CompanyInfo, error) {
 
 	data, err := DataPull(url)
 	if err != nil {
-		return nil, internal.ErrDataPull(err)
+		return nil, errors.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(data, &companyInfo)
 	if err != nil {
-		return nil, internal.ErrUnmarshalJSON(err)
+		return nil, errors.ErrUnmarshalJSON(err)
 
 	}
 
@@ -159,12 +159,12 @@ func FetchIncomeStatement(ticker, apiKey string) (*IncomeStatement, error) {
 
 	data, err := DataPull(url)
 	if err != nil {
-		return nil, internal.ErrDataPull(err)
+		return nil, errors.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(data, &incomeStatement)
 	if err != nil {
-		return nil, internal.ErrUnmarshalJSON(err)
+		return nil, errors.ErrUnmarshalJSON(err)
 	}
 
 	return &incomeStatement, nil
@@ -269,12 +269,12 @@ func FetchBalanceSheet(ticker, apiKey string) (*BalanceSheet, error) {
 
 	bal, err := DataPull(url)
 	if err != nil {
-		return nil, internal.ErrDataPull(err)
+		return nil, errors.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(bal, &balanceSheet)
 	if err != nil {
-		return nil, internal.ErrUnmarshalJSON(err)
+		return nil, errors.ErrUnmarshalJSON(err)
 	}
 
 	return &balanceSheet, nil
@@ -361,12 +361,12 @@ func FetchCashFlow(ticker, apiKey string) (*CashFlow, error) {
 
 	data, err := DataPull(url)
 	if err != nil {
-		return nil, internal.ErrDataPull(err)
+		return nil, errors.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(data, &cash)
 	if err != nil {
-		return nil, internal.ErrUnmarshalJSON(err)
+		return nil, errors.ErrUnmarshalJSON(err)
 	}
 
 	return &cash, nil
@@ -403,12 +403,12 @@ func FetchEarnings(ticker, apiKey string) (*EarningsData, error) {
 
 	report, err := DataPull(url)
 	if err != nil {
-		return nil, internal.ErrDataPull(err)
+		return nil, errors.ErrDataPull(err)
 	}
 
 	err = json.Unmarshal(report, &earningsReport)
 	if err != nil {
-		return nil, internal.ErrUnmarshalJSON(err)
+		return nil, errors.ErrUnmarshalJSON(err)
 	}
 
 	return &earningsReport, nil
