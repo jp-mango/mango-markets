@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"mangomarkets/internal"
+	"mangomarkets/internal/errors"
 )
 
 /*
@@ -14,7 +14,7 @@ func FetchActiveListings(apiKey string) (string, error) {
 
 	listings, err := DataPull(url)
 	if err != nil {
-		return "", internal.ErrDataPull(err)
+		return "", errors.ErrDataPull(err)
 	}
 
 	return string(listings), nil
