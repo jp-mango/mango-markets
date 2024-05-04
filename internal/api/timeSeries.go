@@ -89,7 +89,7 @@ func FetchWeeklyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
 }
 
 /*
-! Monthly Time Series Data 
+! Monthly Time Series Data
 This API returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.
 */
 func FetchMonthlyTSData(apiKey, ticker string) (*TimeSeriesData, error) {
