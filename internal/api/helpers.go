@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"mangomarkets/internal/errors"
+	"mangomarkets/internal/load"
 	"net/http"
 	"os"
 	"sort"
@@ -112,9 +113,10 @@ func SanitizeTicker(ticker string) string {
 	return strings.ToUpper(strings.TrimSpace(ticker))
 }
 
-//helper for verifying user ticker input
+// helper for verifying user ticker input
 func FoundTickerInput(ticker string) bool {
-	activeListings, err := os.Open("./listings/activeStock.csv")
+	_, _, ACTIVE_STOCKS, _ := load.Env()
+	activeListings, err := os.Open(ACTIVE_STOCKS)
 	if err != nil {
 		slog.Error(err.Error())
 	}

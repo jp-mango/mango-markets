@@ -44,7 +44,7 @@ func DB(DB_CONN string) (*sql.DB, error) {
 	return db, nil
 }
 
-func Env() (API_KEY, DB_CONN string, err error) {
+func Env() (API_KEY, DB_CONN, ACTIVE_STOCKS string, err error) {
 	err = godotenv.Load()
 	//err = godotenv.Load("../.env")
 	if err != nil {
@@ -53,6 +53,7 @@ func Env() (API_KEY, DB_CONN string, err error) {
 
 	API_KEY = os.Getenv("API_KEY")
 	DB_CONN = os.Getenv("DB_DSN")
+	ACTIVE_STOCKS = os.Getenv("ACTIVE_STOCKS")
 
-	return API_KEY, DB_CONN, err
+	return API_KEY, DB_CONN, ACTIVE_STOCKS, err
 }
