@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io"
 	"log"
 	"log/slog"
 	"os"
@@ -19,9 +18,7 @@ func Logging() (*slog.Logger, *os.File, error) {
 		return nil, nil, fmt.Errorf("error opening log file: %v", err)
 	}
 
-	multi := io.MultiWriter(logLocation, os.Stdout)
-
-	logger := slog.New(slog.NewJSONHandler(multi, nil))
+	logger := slog.New(slog.NewJSONHandler(logLocation, nil))
 	slog.SetDefault(logger)
 	return logger, logLocation, nil
 }
