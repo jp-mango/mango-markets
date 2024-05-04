@@ -1,15 +1,11 @@
 package api
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
 	"mangomarkets/internal/errors"
-	"mangomarkets/internal/load"
 	"net/http"
-	"os"
 	"sort"
 	"strings"
 	"time"
@@ -111,29 +107,4 @@ func PrintTimeSeries(data *TimeSeriesData) string {
 // Cleans up user input for tickers
 func SanitizeTicker(ticker string) string {
 	return strings.ToUpper(strings.TrimSpace(ticker))
-}
-
-// helper for verifying user ticker input
-func FoundTickerInput(ticker string) bool {
-	_, _, ACTIVE_STOCKS, _ := load.Env()
-	activeListings, err := os.Open(ACTIVE_STOCKS)
-	if err != nil {
-		slog.Error(err.Error())
-	}
-	defer activeListings.Close()
-
-	reader := csv.NewReader(activeListings)
-
-	records, err := reader.ReadAll()
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	for _, eachrecord := range records {
-		if eachrecord[0] == ticker {
-			return true
-		}
-	}
-
-	return false
 }
