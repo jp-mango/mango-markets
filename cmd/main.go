@@ -115,5 +115,5 @@ func main() {
 	if api.FoundTickerInput(ticker) {
 		fmt.Printf("%s was found\n", ticker)
 	}
-
+	
 }

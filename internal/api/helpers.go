@@ -112,6 +112,7 @@ func SanitizeTicker(ticker string) string {
 	return strings.ToUpper(strings.TrimSpace(ticker))
 }
 
+//helper for verifying user ticker input
 func FoundTickerInput(ticker string) bool {
 	activeListings, err := os.Open("./listings/activeStock.csv")
 	if err != nil {
