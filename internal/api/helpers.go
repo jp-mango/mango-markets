@@ -103,3 +103,8 @@ func PrintTimeSeries(data *TimeSeriesData) string {
 
 	return sb.String()
 }
+
+// Cleans up user input for tickers
+func SanitizeTicker(ticker string) string{
+	return strings.ToUpper(strings.TrimSpace(ticker))
+}
