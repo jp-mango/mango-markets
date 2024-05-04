@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"os"
 
@@ -20,7 +21,7 @@ func main() {
 	defer logFile.Close()
 
 	//! Load env variables
-	apiKey, DB_CONN, err := load.Env()
+	_, DB_CONN, err := load.Env()
 	if err != nil {
 		logger.Error(err.Error())
 	}
@@ -86,12 +87,48 @@ func main() {
 		} else {
 			fmt.Println(cashFlow)
 		}
-	*/
+	
 	earnings, err := api.FetchEarnings("AAPL", apiKey)
 	if err != nil || earnings == nil {
 		logger.Error(err.Error())
 	} else {
 		fmt.Println(earnings)
 	}
+	
+	listings, err := api.FetchActiveListings(apiKey)
+	if err != nil{
+		logger.Error(err.Error())
+	}else{
+		path := "./listings/active.csv"
+		err = os.WriteFile(path,[]byte(listings),0644)
+		if err != nil{
+			logger.Error(err.Error())
+		}
+		logger.Info(fmt.Sprintf("wrote listings to %s",path))
+	}
+	*/
+	var ticker string
+	fmt.Print("Enter a ticker: ")
+	fmt.Scan(&ticker)
+	ticker = api.SanitizeTicker(ticker)
 
+	activeListings, err := os.Open("./listings/active.csv")
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	defer activeListings.Close()
+
+	reader := csv.NewReader(activeListings)
+
+	records, err := reader.ReadAll()
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	for _, eachrecord := range records {
+		if eachrecord[0] == ticker {
+			fmt.Printf("%s: %s was found in the list.",ticker,eachrecord[1])
+			break
+		}
+	}
 }
