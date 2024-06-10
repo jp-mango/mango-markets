@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	//! Set up logging
+	// Set up logging
 	logger, logFile, err := load.Logging()
 	if err != nil {
 		fmt.Println(fmt.Errorf("error loading logging: %v", err))
@@ -19,13 +19,13 @@ func main() {
 	}
 	defer logFile.Close()
 
-	//! Load env variables
+	// Load env variables
 	apiKey, DB_CONN, _, err := load.Env()
 	if err != nil {
 		logger.Error(err.Error())
 	}
 
-	//! Connect to DB
+	// Connect to DB
 	db, err := load.DB(DB_CONN)
 	if err != nil {
 		logger.Error(err.Error())
@@ -33,59 +33,59 @@ func main() {
 	}
 	defer db.Close()
 
-	//! Pull active tickers for query/ user validation
+	// Pull active tickers for query/ user validation
 	ActiveStockTickers, err := api.FetchActiveListings(apiKey)
 	if err != nil || ActiveStockTickers == nil {
 		logger.Error(err.Error())
 	}
 	/*
-			//! bizniz logic
+				// bizniz logic
 
-			intradayData, err := api.FetchIntradayTSData(apiKey, "AMD", "30min")
-			if err != nil || intradayData == nil {
-				logger.Error(err.Error())
-			}
+				intradayData, err := api.FetchIntradayTSData(apiKey, "AMD", "30min")
+				if err != nil || intradayData == nil {
+					logger.Error(err.Error())
+				}
 
-			dailyData, err := api.FetchDailyTSData(apiKey, "SMCI")
-			if err != nil || dailyData == nil {
-				logger.Error(err.Error())
-			}
+				dailyData, err := api.FetchDailyTSData(apiKey, "SMCI")
+				if err != nil || dailyData == nil {
+					logger.Error(err.Error())
+				}
 
-			weeklyData, err := api.FetchWeeklyTSData(apiKey, "AMD")
-			if err != nil || weeklyData == nil {
-				logger.Error(err.Error())
-			}
+				weeklyData, err := api.FetchWeeklyTSData(apiKey, "AMD")
+				if err != nil || weeklyData == nil {
+					logger.Error(err.Error())
+				}
 
-			monthlyData, err := api.FetchMonthlyTSData(apiKey, "AMD")
-			if err != nil || monthlyData == nil {
-				logger.Error(err.Error())
-			}
+				monthlyData, err := api.FetchMonthlyTSData(apiKey, "AMD")
+				if err != nil || monthlyData == nil {
+					logger.Error(err.Error())
+				}
 
-			companyInfo, err := api.FetchCompanyInfo("AMD", apiKey)
-			if err != nil || companyInfo == nil {
-				logger.Error(err.Error())
-			}
+				companyInfo, err := api.FetchCompanyInfo("AMD", apiKey)
+				if err != nil || companyInfo == nil {
+					logger.Error(err.Error())
+				}
 
-			incomeStatement, err := api.FetchIncomeStatement("AMD", apiKey)
-			if err != nil || incomeStatement == nil {
-				logger.Error(err.Error())
-			}
+				incomeStatement, err := api.FetchIncomeStatement("AMD", apiKey)
+				if err != nil || incomeStatement == nil {
+					logger.Error(err.Error())
+				}
 
-			balanceSheet, err := api.FetchBalanceSheet("NVDA", apiKey)
-			if err != nil || balanceSheet == nil {
-				logger.Error(err.Error())
-			}
+				balanceSheet, err := api.FetchBalanceSheet("NVDA", apiKey)
+				if err != nil || balanceSheet == nil {
+					logger.Error(err.Error())
+				}
 
-			cashFlow, err := api.FetchCashFlow("AAPL", apiKey)
-			if err != nil || cashFlow == nil {
-				logger.Error(err.Error())
-			}
-
+				cashFlow, err := api.FetchCashFlow("AAPL", apiKey)
+				if err != nil || cashFlow == nil {
+					logger.Error(err.Error())
+				}
 			earnings, err := api.FetchEarnings("AAPL", apiKey)
 			if err != nil || earnings == nil {
 				logger.Error(err.Error())
 			}
 
+			fmt.Print(earnings)
 
 		var ticker string
 		fmt.Print("Enter a ticker: ")
@@ -98,6 +98,7 @@ func main() {
 		} else {
 			fmt.Println("Ticker not found")
 		}
+
+		fmt.Println(len(ActiveStockTickers))
 	*/
-	fmt.Println(len(ActiveStockTickers))
 }
