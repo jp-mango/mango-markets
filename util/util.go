@@ -522,7 +522,7 @@ topicConstruct:
 
 // ! user entry validation
 func CheckTickerStatus(ticker string) (bool, error) {
-	file, err := os.Open("../../reference/listing_status.csv")
+	file, err := os.Open("reference/listing_status.csv")
 
 	if err != nil {
 		return false, err
